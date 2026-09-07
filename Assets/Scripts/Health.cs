@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using UnityEngine;
+
 
 [DisallowMultipleComponent]
 public class Health : MonoBehaviour, IDamageable
@@ -7,15 +9,24 @@ public class Health : MonoBehaviour, IDamageable
     [Header("Configuración")]
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private Faction faction = Faction.Enemy;
+
+ 
     public event Action<int, int> OnHealthChanged;
+
+
     public event Action<GameObject> OnDeath;
+
+    public event Action<bool> OnShieldChanged;
 
     public Faction Faction => faction;
     public bool IsAlive => currentHealth > 0;
+    public bool IsInvulnerable => isInvulnerable;
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
 
     private int currentHealth;
+    private bool isInvulnerable;
+    private Coroutine shieldRoutine;
 
     private void Awake()
     {
@@ -24,7 +35,7 @@ public class Health : MonoBehaviour, IDamageable
 
     public void TakeDamage(int amount, GameObject source)
     {
-        if (!IsAlive || amount <= 0)
+        if (!IsAlive || isInvulnerable || amount <= 0)
         {
             return;
         }
@@ -48,9 +59,38 @@ public class Health : MonoBehaviour, IDamageable
         currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
     }
+
     public void ResetHealth()
     {
         currentHealth = maxHealth;
         OnHealthChanged?.Invoke(currentHealth, maxHealth);
+    }
+
+  
+    public void ActivateShield(float duration)
+    {
+        if (!IsAlive || duration <= 0f)
+        {
+            return;
+        }
+
+        if (shieldRoutine != null)
+        {
+            StopCoroutine(shieldRoutine);
+        }
+
+        shieldRoutine = StartCoroutine(ShieldRoutine(duration));
+    }
+
+    private IEnumerator ShieldRoutine(float duration)
+    {
+        isInvulnerable = true;
+        OnShieldChanged?.Invoke(true);
+
+        yield return new WaitForSeconds(duration);
+
+        isInvulnerable = false;
+        shieldRoutine = null;
+        OnShieldChanged?.Invoke(false);
     }
 }

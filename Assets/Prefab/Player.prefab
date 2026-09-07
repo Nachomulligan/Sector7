@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5862373777499476892}
   - component: {fileID: 4456641609916681107}
   - component: {fileID: 1851155867797125101}
+  - component: {fileID: 1983128371412394800}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -206,6 +207,19 @@ MonoBehaviour:
   boundsMin: {x: -4, y: -7}
   boundsMax: {x: 4, y: 7}
   fingerOffset: {x: 0, y: 1.2}
+--- !u!114 &1983128371412394800
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4417354438317756373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1d3466cf69b2ea44a1d5c3eac159c8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MechaAbility
+  ability: {fileID: 11400000, guid: fcf60ecb88e786b4893b4794a71fa218, type: 2}
 --- !u!1 &5161032973665318102
 GameObject:
   m_ObjectHideFlags: 0
