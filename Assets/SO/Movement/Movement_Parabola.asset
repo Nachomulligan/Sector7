@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53cfe5db79cd4f043b505f965431529a, type: 3}
+  m_Name: Movement_Parabola
+  m_EditorClassIdentifier: Assembly-CSharp::ParabolaMovementStrategy
+  duration: 3
+  verticalDrop: 6
+  horizontalTravel: 4
+  curveStrength: 3
+  exitSpeed: 4

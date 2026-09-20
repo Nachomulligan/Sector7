@@ -219,7 +219,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyMecha
   weapon: {fileID: 11400000, guid: e2df7247b9542574cb5b122a641b8416, type: 2}
   firePoint: {fileID: 5361598080106304938}
-  moveSpeed: 3
+  movement: {fileID: 11400000, guid: e6d3f7b1ed6f8df46b96676e62f1ab9d, type: 2}
+  boundsMin: {x: -3.5, y: -10}
+  boundsMax: {x: 3.5, y: 10}
   despawnY: -8
 --- !u!114 &7053163677038305626
 MonoBehaviour:

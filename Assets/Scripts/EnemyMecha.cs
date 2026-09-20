@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 [RequireComponent(typeof(Health))]
 public class EnemyMecha : MonoBehaviour, IPoolable
 {
@@ -8,14 +9,19 @@ public class EnemyMecha : MonoBehaviour, IPoolable
     [SerializeField] private Transform firePoint;
 
     [Header("Movimiento")]
-    [Tooltip("Velocidad de descenso, en unidades/seg (estilo 1945: entra por arriba y baja).")]
-    [SerializeField] private float moveSpeed = 3f;
+    [Tooltip("Patrón de vuelo de este enemigo. Cambiarlo (o crear uno nuevo) no requiere tocar esta clase.")]
+    [SerializeField] private MovementStrategySO movement;
+
+    [Tooltip("Límites horizontales del área jugable. Se aplican SIEMPRE, sin importar qué haga la estrategia, para garantizar que el enemigo nunca salga de pantalla por el costado.")]
+    [SerializeField] private Vector2 boundsMin = new Vector2(-3.5f, -10f);
+    [SerializeField] private Vector2 boundsMax = new Vector2(3.5f, 10f);
 
     [Tooltip("Y en la que el enemigo se considera 'fuera de pantalla' y se despawnea sin dar puntos.")]
     [SerializeField] private float despawnY = -8f;
 
     private float cooldownTimer;
     private Health health;
+    private readonly MovementState movementState = new MovementState();
 
     private void Awake()
     {
@@ -39,7 +45,7 @@ public class EnemyMecha : MonoBehaviour, IPoolable
             return;
         }
 
-        transform.position += Vector3.down * moveSpeed * Time.deltaTime;
+        ApplyMovement();
 
         if (transform.position.y <= despawnY)
         {
@@ -55,6 +61,19 @@ public class EnemyMecha : MonoBehaviour, IPoolable
             weapon.Fire(origin, transform);
             cooldownTimer = weapon.Cooldown;
         }
+    }
+
+    private void ApplyMovement()
+    {
+        if (movement == null)
+        {
+            return;
+        }
+
+        movement.Move(transform, movementState, Time.deltaTime, boundsMin, boundsMax);
+        Vector3 pos = transform.position;
+        pos.x = Mathf.Clamp(pos.x, boundsMin.x, boundsMax.x);
+        transform.position = pos;
     }
 
     private void HandleDeath(GameObject killer)
@@ -78,6 +97,7 @@ public class EnemyMecha : MonoBehaviour, IPoolable
     {
         health.ResetHealth();
         cooldownTimer = 0f;
+        movementState.Reset();
     }
 
     public void OnDespawn()
