@@ -42,17 +42,11 @@ public class DashMovementStrategy : MovementStrategySO
 
     private Vector2 ResolveDashDirection(Transform enemy)
     {
-        if (aimAtPlayerOnDash)
+        if (aimAtPlayerOnDash &&
+            ServiceLocator.Instance.TryGet<IPlayerTarget>(out IPlayerTarget target) &&
+            target.IsAlive)
         {
-            Health[] allHealth = Object.FindObjectsOfType<Health>();
-
-            foreach (Health health in allHealth)
-            {
-                if (health.Faction == Faction.Player && health.IsAlive)
-                {
-                    return ((Vector2)health.transform.position - (Vector2)enemy.position).normalized;
-                }
-            }
+            return ((Vector2)target.TargetTransform.position - (Vector2)enemy.position).normalized;
         }
 
         return Vector2.down;

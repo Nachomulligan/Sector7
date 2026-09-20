@@ -1,7 +1,5 @@
 using UnityEngine;
-public interface IDamageable
+public interface IDamageable : ICombatTarget
 {
-    Faction Faction { get; }
-    bool IsAlive { get; }
     void TakeDamage(int amount, GameObject source);
 }

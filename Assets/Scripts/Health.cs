@@ -4,7 +4,7 @@ using UnityEngine;
 
 
 [DisallowMultipleComponent]
-public class Health : MonoBehaviour, IDamageable
+public class Health : MonoBehaviour, IDamageable, IPlayerTarget
 {
     [Header("Configuración")]
     [SerializeField] private int maxHealth = 100;
@@ -20,6 +20,7 @@ public class Health : MonoBehaviour, IDamageable
 
     public Faction Faction => faction;
     public bool IsAlive => currentHealth > 0;
+    public Transform TargetTransform => transform;
     public bool IsInvulnerable => isInvulnerable;
     public int CurrentHealth => currentHealth;
     public int MaxHealth => maxHealth;
@@ -31,6 +32,29 @@ public class Health : MonoBehaviour, IDamageable
     private void Awake()
     {
         currentHealth = maxHealth;
+    }
+
+    private void OnEnable()
+    {
+        ServiceLocator.Instance.Register<ICombatTarget>(this);
+
+        if (faction == Faction.Player)
+        {
+            ServiceLocator.Instance.Register<IPlayerTarget>(this);
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (ServiceLocator.HasInstance)
+        {
+            ServiceLocator.Instance.Unregister<ICombatTarget>(this);
+
+            if (faction == Faction.Player)
+            {
+                ServiceLocator.Instance.Unregister<IPlayerTarget>(this);
+            }
+        }
     }
 
     public void TakeDamage(int amount, GameObject source)

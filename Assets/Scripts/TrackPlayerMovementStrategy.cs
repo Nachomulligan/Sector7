@@ -23,14 +23,10 @@ public class TrackPlayerMovementStrategy : MovementStrategySO
 
     private Transform FindPlayer()
     {
-        Health[] allHealth = Object.FindObjectsOfType<Health>();
-
-        foreach (Health health in allHealth)
+        if (ServiceLocator.Instance.TryGet<IPlayerTarget>(out IPlayerTarget target) &&
+            target.IsAlive)
         {
-            if (health.Faction == Faction.Player && health.IsAlive)
-            {
-                return health.transform;
-            }
+            return target.TargetTransform;
         }
 
         return null;
