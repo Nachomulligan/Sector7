@@ -4,7 +4,8 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 public class EnemyMecha : MonoBehaviour, IPoolable
 {
-    [Header("Arma")]
+    [Header("Arma opcional")]
+    [Tooltip("Dejar en None para enemigos que sólo se mueven, embisten o hacen daño por contacto.")]
     [SerializeField] private WeaponStrategySO weapon;
     [SerializeField] private Transform firePoint;
 
@@ -50,6 +51,11 @@ public class EnemyMecha : MonoBehaviour, IPoolable
         if (transform.position.y <= despawnY)
         {
             Despawn();
+            return;
+        }
+
+        if (weapon == null)
+        {
             return;
         }
 
