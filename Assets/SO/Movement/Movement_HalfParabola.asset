@@ -9,10 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 53cfe5db79cd4f043b505f965431529a, type: 3}
-  m_Name: Movement_Parabola
-  m_EditorClassIdentifier: Assembly-CSharp::ParabolaMovementStrategy
+  m_Script: {fileID: 11500000, guid: be3bb679392a465d9de3ca6909a69d36, type: 3}
+  m_Name: Movement_HalfParabola
+  m_EditorClassIdentifier: Assembly-CSharp::HalfParabolaMovementStrategy
   duration: 3
   verticalDrop: 6
-  horizontalBulge: 2
+  horizontalTravel: 4
+  curveStrength: 3
   exitSpeed: 4
