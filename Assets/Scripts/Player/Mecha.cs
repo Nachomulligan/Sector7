@@ -35,7 +35,7 @@ public class Mecha : MonoBehaviour
 
         cooldownTimer -= Time.deltaTime;
 
-        if (cooldownTimer <= 0f)
+        if (weapon != null && cooldownTimer <= 0f)
         {
             Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
             weapon.Fire(origin, transform);

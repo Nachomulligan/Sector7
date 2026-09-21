@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
+  m_Name: Reward_Falcon
+  m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
+  displayName: Falcon
+  rarity: 2
+  kind: 0
+  mecha: {fileID: 11400000, guid: 4119612f12874213898078009906e32a, type: 2}
+  weapon: {fileID: 0}
+  ability: {fileID: 0}

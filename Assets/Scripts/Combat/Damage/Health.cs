@@ -23,9 +23,10 @@ public class Health : MonoBehaviour, IDamageable, IPlayerTarget
     public Transform TargetTransform => transform;
     public bool IsInvulnerable => isInvulnerable;
     public int CurrentHealth => currentHealth;
-    public int MaxHealth => maxHealth;
+    public int MaxHealth => Mathf.Max(1, maxHealth + bonusMaxHealth);
 
     private int currentHealth;
+    private int bonusMaxHealth;
     private bool isInvulnerable;
     private Coroutine shieldRoutine;
 
@@ -65,7 +66,7 @@ public class Health : MonoBehaviour, IDamageable, IPlayerTarget
         }
 
         currentHealth = Mathf.Max(0, currentHealth - amount);
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        OnHealthChanged?.Invoke(currentHealth, MaxHealth);
 
         if (currentHealth == 0)
         {
@@ -80,14 +81,23 @@ public class Health : MonoBehaviour, IDamageable, IPlayerTarget
             return;
         }
 
-        currentHealth = Mathf.Min(maxHealth, currentHealth + amount);
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        currentHealth = Mathf.Min(MaxHealth, currentHealth + amount);
+        OnHealthChanged?.Invoke(currentHealth, MaxHealth);
     }
 
     public void ResetHealth()
     {
-        currentHealth = maxHealth;
-        OnHealthChanged?.Invoke(currentHealth, maxHealth);
+        currentHealth = MaxHealth;
+        OnHealthChanged?.Invoke(currentHealth, MaxHealth);
+    }
+
+    public void SetBonusMaxHealth(int bonus)
+    {
+        int previousMax = MaxHealth;
+        bonusMaxHealth = Mathf.Max(0, bonus);
+        if (currentHealth > 0)
+            currentHealth = Mathf.Clamp(Mathf.RoundToInt(currentHealth * (float)MaxHealth / previousMax), 1, MaxHealth);
+        OnHealthChanged?.Invoke(currentHealth, MaxHealth);
     }
 
   
