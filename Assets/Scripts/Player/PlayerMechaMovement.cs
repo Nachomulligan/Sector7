@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.EnhancedTouch;
 
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
@@ -32,6 +33,9 @@ public class PlayerMechaMovement : MonoBehaviour
     [Header("Offset de dedo")]
     [Tooltip("Desplaza el mecha por encima del dedo para que el jugador no lo tape.")]
     [SerializeField] private Vector2 fingerOffset = new Vector2(0f, 1.2f);
+
+    [Header("Interaccioon con UI")]
+    [SerializeField] private bool ignoreTouchesOverUI = true;
 
     private float distanceFromCamera;
     private Vector3 targetPosition;
@@ -81,7 +85,7 @@ public class PlayerMechaMovement : MonoBehaviour
         {
             foreach (Touch touch in Touch.activeTouches)
             {
-                if (touch.phase == TouchPhase.Began)
+                if (touch.phase == TouchPhase.Began && !IsTouchOverUI(touch))
                 {
                     activeTouchId = touch.touchId;
                     isDragging = true;
@@ -124,6 +128,12 @@ public class PlayerMechaMovement : MonoBehaviour
             isDragging = false;
             activeTouchId = -1;
         }
+    }
+    private bool IsTouchOverUI(Touch touch)
+    {
+        return ignoreTouchesOverUI &&
+               EventSystem.current != null &&
+               EventSystem.current.IsPointerOverGameObject(touch.touchId);
     }
 
     private void UpdateTargetFromScreenPosition(Vector2 screenPosition)
