@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 299c76598367444db70fa9d07b021f45, type: 3}
+  m_Name: EnemyTable_All
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawnTableSO
+  enemies:
+  - prefab: {fileID: 7015203303837389937, guid: 4908065578bf3ae429e83f38806fc133, type: 3}
+    weight: 50
+  - prefab: {fileID: 7015203303837389937, guid: 06bbd783ec6a76049ac997974e9cd84a, type: 3}
+    weight: 20
+  - prefab: {fileID: 7015203303837389937, guid: 5b30d6bb4d6b91c4790d23fd4a45174f, type: 3}
+    weight: 20
+  - prefab: {fileID: 7015203303837389937, guid: b17d868407f49684eb748a876353af5e, type: 3}
+    weight: 12
+  - prefab: {fileID: 7015203303837389937, guid: c7d772fc8486c4d42b942d28a5b89bf5, type: 3}
+    weight: 12
+  - prefab: {fileID: 7015203303837389937, guid: 3522283fca5bd6d47b01695cfd4aa12e, type: 3}
+    weight: 10
+  - prefab: {fileID: 7015203303837389937, guid: 0bf9017b0e5344a42b1a57dc7be66638, type: 3}
+    weight: 8
+  - prefab: {fileID: 7015203303837389937, guid: 82507be262666414f8dfed2fd899f614, type: 3}
+    weight: 5
+  - prefab: {fileID: 7015203303837389937, guid: 95db17fa79c100e42ac97b5f50f63688, type: 3}
+    weight: 4
+  - prefab: {fileID: 7015203303837389937, guid: 41f34b075b53e2e479ed9df1b0f2e093, type: 3}
+    weight: 4

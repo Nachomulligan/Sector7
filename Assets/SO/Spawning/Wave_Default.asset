@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 43f7ca723f62403da6f98420e5cf1425, type: 3}
+  m_Name: Wave_Default
+  m_EditorClassIdentifier: Assembly-CSharp::WaveDefinitionSO
+  spawnInstructions:
+  - enemyPrefab: {fileID: 7015203303837389937, guid: 06bbd783ec6a76049ac997974e9cd84a, type: 3}
+    enemyTable: {fileID: 0}
+    formation: {fileID: 11400000, guid: eb0316f999cce0a43b14f9af7fa44e79, type: 2}
+    anchor: {x: 0, y: 6}
+    delayBeforeSpawn: 0
+    randomHorizontalOffset: 0
+    overrideSpawnInterval: 0
+    spawnInterval: 0
+    forceMirror: 0
+  - enemyPrefab: {fileID: 0}
+    enemyTable: {fileID: 11400000, guid: 639073b48244478da88cc18fc51cf1c6, type: 2}
+    formation: {fileID: 11400000, guid: e55bfa46cbed4a4fbf1af474fa8b9ff2, type: 2}
+    anchor: {x: 0, y: 6}
+    delayBeforeSpawn: 4
+    randomHorizontalOffset: 0
+    overrideSpawnInterval: 0
+    spawnInterval: 0
+    forceMirror: 0
+  waitForAllEnemies: 1
+  delayAfterWave: 4

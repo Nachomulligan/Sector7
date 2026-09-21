@@ -1,9 +1,12 @@
+using System;
 using UnityEngine;
 
 
 [RequireComponent(typeof(Health))]
 public class EnemyMecha : MonoBehaviour, IPoolable
 {
+    public event Action<EnemyMecha> OnReturnedToPool;
+
     [Header("Arma opcional")]
     [Tooltip("Dejar en None para enemigos que sólo se mueven, embisten o hacen daño por contacto.")]
     [SerializeField] private WeaponStrategySO weapon;
@@ -22,6 +25,7 @@ public class EnemyMecha : MonoBehaviour, IPoolable
 
     private float cooldownTimer;
     private Health health;
+    private bool returnNotified;
     private readonly MovementState movementState = new MovementState();
 
     private void Awake()
@@ -95,12 +99,14 @@ public class EnemyMecha : MonoBehaviour, IPoolable
         }
         else
         {
+            NotifyReturnedToPool();
             Destroy(gameObject);
         }
     }
 
     public void OnSpawn()
     {
+        returnNotified = false;
         health.ResetHealth();
         cooldownTimer = 0f;
         movementState.Reset();
@@ -108,5 +114,22 @@ public class EnemyMecha : MonoBehaviour, IPoolable
 
     public void OnDespawn()
     {
+        NotifyReturnedToPool();
+    }
+
+    private void OnDestroy()
+    {
+        NotifyReturnedToPool();
+    }
+
+    private void NotifyReturnedToPool()
+    {
+        if (returnNotified)
+        {
+            return;
+        }
+
+        returnNotified = true;
+        OnReturnedToPool?.Invoke(this);
     }
 }

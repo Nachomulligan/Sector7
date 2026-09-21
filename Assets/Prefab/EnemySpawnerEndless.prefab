@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8451062271889987237
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4211535574945985384}
+  - component: {fileID: 1967325448236250528}
+  m_Layer: 0
+  m_Name: EnemySpawnerEndless
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4211535574945985384
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8451062271889987237}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -1.11, y: 8.12, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1967325448236250528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8451062271889987237}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b51e973ab87f8045acab347475f25a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
+  mode: 0
+  playOnStart: 1
+  loopSequence: 0
+  minSpawnX: -2.5
+  maxSpawnX: 2.5
+  maxActiveEnemies: 3
+  pauseWithoutLivingPlayer: 1
+  endlessEnemyTable: {fileID: 11400000, guid: 639073b48244478da88cc18fc51cf1c6, type: 2}
+  endlessEnemyPrefabs:
+  - {fileID: 7015203303837389937, guid: 5b30d6bb4d6b91c4790d23fd4a45174f, type: 3}
+  - {fileID: 7015203303837389937, guid: 4908065578bf3ae429e83f38806fc133, type: 3}
+  - {fileID: 7015203303837389937, guid: 82507be262666414f8dfed2fd899f614, type: 3}
+  - {fileID: 7015203303837389937, guid: c7d772fc8486c4d42b942d28a5b89bf5, type: 3}
+  - {fileID: 7015203303837389937, guid: 06bbd783ec6a76049ac997974e9cd84a, type: 3}
+  - {fileID: 7015203303837389937, guid: 95db17fa79c100e42ac97b5f50f63688, type: 3}
+  - {fileID: 7015203303837389937, guid: 41f34b075b53e2e479ed9df1b0f2e093, type: 3}
+  - {fileID: 7015203303837389937, guid: 0bf9017b0e5344a42b1a57dc7be66638, type: 3}
+  - {fileID: 7015203303837389937, guid: b17d868407f49684eb748a876353af5e, type: 3}
+  - {fileID: 7015203303837389937, guid: 3522283fca5bd6d47b01695cfd4aa12e, type: 3}
+  endlessFormations:
+  - {fileID: 11400000, guid: a30cd70b136a4779bbab38fbfcdcc65b, type: 2}
+  - {fileID: 11400000, guid: e55bfa46cbed4a4fbf1af474fa8b9ff2, type: 2}
+  - {fileID: 11400000, guid: d2ca013cc99d49a9a50c80344f83c244, type: 2}
+  - {fileID: 11400000, guid: 974f0b2c97574f7084f38ffdb5b0e3c2, type: 2}
+  - {fileID: 11400000, guid: 377a02c55b0744ae935a1ff694205c85, type: 2}
+  - {fileID: 11400000, guid: eb0316f999cce0a43b14f9af7fa44e79, type: 2}
+  endlessAnchor: {x: 0, y: 6}
+  intervalBetweenFormations: 3
+  waves:
+  - {fileID: 11400000, guid: d93995a888c5441eb9acf0b835fd1d0b, type: 2}
+  legacyEnemyPrefab: {fileID: 7015203303837389937, guid: 06bbd783ec6a76049ac997974e9cd84a, type: 3}
+  legacySpawnY: 6
+  onWaveStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  onWaveFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  onAllWavesFinished:
+    m_PersistentCalls:
+      m_Calls: []
