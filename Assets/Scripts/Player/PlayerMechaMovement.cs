@@ -5,11 +5,6 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
-/// <summary>
-/// Handles touch-drag movement for the player's active mecha in the rail shooter.
-/// - Movement is drag-to-follow (mecha snaps toward touch position)
-
-/// </summary>
 [DisallowMultipleComponent]
 public class PlayerMechaMovement : MonoBehaviour
 {

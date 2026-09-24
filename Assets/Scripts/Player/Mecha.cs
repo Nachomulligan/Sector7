@@ -19,6 +19,11 @@ public class Mecha : MonoBehaviour
     private void OnEnable()
     {
         health.OnDeath += HandleDeath;
+
+        if (ServiceLocator.Instance.TryGet(out PlayerInventory inventory))
+        {
+            inventory.ApplyEquippedLoadout(this);
+        }
     }
 
     private void OnDisable()

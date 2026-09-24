@@ -1,10 +1,8 @@
-using System.Collections.Generic;
-using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-// Adaptador opcional: la lógica de tiradas e inventario funciona sin esta pantalla.
+[DisallowMultipleComponent]
 public sealed class GachaPanelUI : MonoBehaviour
 {
     [SerializeField] private Button softPullButton;
@@ -23,16 +21,15 @@ public sealed class GachaPanelUI : MonoBehaviour
     {
         ServiceLocator.Instance.TryGet(out gacha);
         ServiceLocator.Instance.TryGet(out inventory);
-
-        if (gacha == null || inventory == null)
+        if (gacha == null || inventory == null || !HasViewReferences)
         {
-            Debug.LogWarning("GachaPanelUI requiere GachaService y PlayerInventory activos.", this);
+            Debug.LogWarning("GachaPanelUI tiene servicios o referencias de UI sin asignar.", this);
             return;
         }
 
-        if (softPullButton != null) softPullButton.onClick.AddListener(PullSoft);
-        if (premiumPullButton != null) premiumPullButton.onClick.AddListener(PullPremium);
-        if (equipLastRewardButton != null) equipLastRewardButton.onClick.AddListener(EquipLastReward);
+        softPullButton.onClick.AddListener(PullSoft);
+        premiumPullButton.onClick.AddListener(PullPremium);
+        equipLastRewardButton.onClick.AddListener(EquipLastReward);
         inventory.OnChanged += Refresh;
         gacha.OnPullCompleted += HandlePull;
         Refresh();
@@ -53,47 +50,52 @@ public sealed class GachaPanelUI : MonoBehaviour
     public void EquipLastReward()
     {
         if (lastReward == null || inventory == null) return;
-        if (resultText != null)
-            resultText.text = inventory.TryEquipReward(lastReward)
-                ? $"Equipado: {lastReward.DisplayName}"
-                : "No se pudo equipar en este momento.";
+        resultText.text = inventory.TryEquipReward(lastReward)
+            ? $"EQUIPADO  •  {lastReward.DisplayName}" : "No se pudo equipar la recompensa.";
     }
 
     private void Pull(GachaCurrency currency)
     {
-        if (gacha == null) return;
-        if (!gacha.TryPullDefault(currency, out _, out GachaPullFailure failure) && resultText != null)
-            resultText.text = $"No se pudo tirar: {failure}";
+        if (!gacha.TryPullDefault(currency, out _, out GachaPullFailure failure))
+            resultText.text = FailureMessage(failure);
     }
 
     private void HandlePull(GachaPullResult result)
     {
         lastReward = result.Reward;
-        if (resultText != null)
-            resultText.text = $"{result.Reward.DisplayName} · {result.Reward.Rarity}" +
-                (result.WasDuplicate ? " · duplicado" : "") +
-                (result.PityTriggered ? " · pity" : "");
+        resultText.color = RarityColor(result.Reward.Rarity);
+        resultText.text = $"{result.Reward.DisplayName}\n{result.Reward.Rarity}" +
+            (result.WasDuplicate ? "  •  DUPLICADO" : "  •  NUEVO") +
+            (result.PityTriggered ? "  •  PITY" : string.Empty);
+        equipLastRewardButton.interactable = result.Reward.IsValid;
         Refresh();
     }
 
     private void Refresh()
     {
-        if (inventory == null || gacha == null) return;
-        if (balanceText != null)
-            balanceText.text = $"Soft: {inventory.SoftCurrency}  Premium: {inventory.PremiumCurrency}";
-        if (pityText != null && gacha.DefaultBanner != null)
-            pityText.text = $"Pity Epic+: {gacha.GetPullsSinceEpic(gacha.DefaultBanner)}/{gacha.DefaultBanner.EpicPityThreshold}";
-        if (inventoryText != null)
+        balanceText.text = $"CREDITOS  {inventory.SoftCurrency:N0}     GEMAS  {inventory.PremiumCurrency:N0}";
+        if (gacha.DefaultBanner != null)
+            pityText.text = $"GARANTIA EPIC+  {gacha.GetPullsSinceEpic(gacha.DefaultBanner)} / {gacha.DefaultBanner.EpicPityThreshold}";
+        inventoryText.text = $"Coleccion: {inventory.Owned.Count} objetos";
+    }
+
+    private bool HasViewReferences => softPullButton != null && premiumPullButton != null &&
+        equipLastRewardButton != null && balanceText != null && pityText != null &&
+        resultText != null && inventoryText != null;
+
+    private static Color RarityColor(GachaRarity rarity)
+    {
+        switch (rarity)
         {
-            StringBuilder summary = new StringBuilder("Inventario");
-            foreach (KeyValuePair<GachaRewardSO, int> item in inventory.Owned)
-            {
-                if (item.Key == null) continue;
-                summary.Append('\n').Append(item.Key.DisplayName).Append(" x").Append(item.Value);
-                if (item.Key.Kind == GachaRewardKind.Mecha)
-                    summary.Append(" · ascensión ").Append(inventory.Ascension(item.Key.Mecha));
-            }
-            inventoryText.text = summary.ToString();
+            case GachaRarity.Rare: return new Color(0.13f, 0.48f, 0.9f);
+            case GachaRarity.Epic: return new Color(0.58f, 0.22f, 0.86f);
+            case GachaRarity.Legendary: return new Color(0.95f, 0.55f, 0.12f);
+            default: return new Color(0.75f, 0.82f, 0.9f);
         }
     }
+
+    private static string FailureMessage(GachaPullFailure failure) =>
+        failure == GachaPullFailure.InsufficientCurrency ? "Saldo insuficiente" :
+        failure == GachaPullFailure.InvalidBanner ? "El banner no tiene recompensas validas" :
+        "No se pudo realizar la tirada";
 }

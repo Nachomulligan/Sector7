@@ -7,6 +7,7 @@ public enum GachaRewardKind { Mecha, Weapon, Ability }
 public sealed class GachaRewardSO : ScriptableObject
 {
     [SerializeField] private string displayName;
+    [SerializeField] private Sprite icon;
     [SerializeField] private GachaRarity rarity;
     [SerializeField] private GachaRewardKind kind;
     [SerializeField] private MechaPresetSO mecha;
@@ -14,6 +15,7 @@ public sealed class GachaRewardSO : ScriptableObject
     [SerializeField] private SkillStrategySO ability;
 
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
+    public Sprite Icon => icon;
     public GachaRarity Rarity => rarity;
     public GachaRewardKind Kind => kind;
     public MechaPresetSO Mecha => mecha;

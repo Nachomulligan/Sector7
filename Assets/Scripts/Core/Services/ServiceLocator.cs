@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[DefaultExecutionOrder(-1100)]
 [DisallowMultipleComponent]
 public sealed class ServiceLocator : MonoBehaviour
 {
@@ -39,6 +40,7 @@ public sealed class ServiceLocator : MonoBehaviour
         }
 
         instance = this;
+        DontDestroyOnLoad(gameObject);
     }
 
     private void OnDestroy()

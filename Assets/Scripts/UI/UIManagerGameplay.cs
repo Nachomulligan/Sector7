@@ -2,7 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class UIManager : MonoBehaviour
+public class UIManagerGameplay : MonoBehaviour
 {
     [Header("Referencias de gameplay")]
     [SerializeField] private Health playerHealth;
