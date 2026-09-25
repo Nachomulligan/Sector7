@@ -1,7 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+ 
 public class UIManagerGameplay : MonoBehaviour
 {
     [Header("Referencias de gameplay")]
@@ -14,6 +14,11 @@ public class UIManagerGameplay : MonoBehaviour
     [Header("UI - Habilidad")]
     [SerializeField] private Button abilityButton;
 
+    [Header("UI - Score")]
+    [SerializeField] private TMP_Text scoreText;
+
+    private ScoreManager scoreManager;
+
     private void OnEnable()
     {
         if (playerHealth != null)
@@ -25,6 +30,11 @@ public class UIManagerGameplay : MonoBehaviour
         if (abilityButton != null)
         {
             abilityButton.onClick.AddListener(HandleAbilityButtonPressed);
+        }
+        if (ServiceLocator.HasInstance && ServiceLocator.Instance.TryGet(out scoreManager))
+        {
+            scoreManager.OnScoreChanged += HandleScoreChanged;
+            HandleScoreChanged(scoreManager.CurrentScore);
         }
     }
 
@@ -39,6 +49,11 @@ public class UIManagerGameplay : MonoBehaviour
         {
             abilityButton.onClick.RemoveListener(HandleAbilityButtonPressed);
         }
+
+        if (scoreManager != null)
+        {
+            scoreManager.OnScoreChanged -= HandleScoreChanged;
+        }
     }
 
     private void HandleHealthChanged(int current, int max)
@@ -46,6 +61,14 @@ public class UIManagerGameplay : MonoBehaviour
         if (healthText != null)
         {
             healthText.text = $"{current} / {max}";
+        }
+    }
+
+    private void HandleScoreChanged(int newScore)
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = $"SCORE: {newScore}";
         }
     }
 
