@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 44706822}
   - component: {fileID: 44706821}
   m_Layer: 5
-  m_Name: ScoreText (3)
+  m_Name: WaveCount
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1414,7 +1414,7 @@ GameObject:
   - component: {fileID: 790866146}
   - component: {fileID: 790866145}
   m_Layer: 5
-  m_Name: ScoreText (2)
+  m_Name: WaveText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2941,7 +2941,7 @@ GameObject:
   - component: {fileID: 1350159741}
   - component: {fileID: 1350159740}
   m_Layer: 5
-  m_Name: ScoreText (1)
+  m_Name: ScorePoints
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3430,7 +3430,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0daea9170c1aa694ca0118d8cb3eeaa1, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UIManager
+  m_EditorClassIdentifier: Assembly-CSharp::UIManagerGameplay
   playerHealth: {fileID: 187998301}
   playerAbility: {fileID: 3693635300022554592}
   healthText: {fileID: 0}

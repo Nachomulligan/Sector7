@@ -59,6 +59,7 @@ public class EnemySpawner : MonoBehaviour
 
     public bool IsRunning => spawnRoutine != null;
     public int CurrentWaveIndex { get; private set; } = -1;
+    public int WaveCount => waves.Count;
 
     private readonly List<Vector2> formationOffsets = new List<Vector2>();
     private readonly HashSet<EnemyMecha> activeEnemies = new HashSet<EnemyMecha>();
@@ -112,11 +113,15 @@ public class EnemySpawner : MonoBehaviour
 
     private IEnumerator RunEndlessRandom()
     {
-        CurrentWaveIndex = -1;
+        int endlessWaveIndex = 0;
 
         while (true)
         {
             FormationPresetSO formation = GetRandomFormation();
+            yield return new WaitUntil(CanSpawnNextEnemy);
+            CurrentWaveIndex = endlessWaveIndex;
+            OnWaveStarted?.Invoke(endlessWaveIndex, null);
+            onWaveStarted?.Invoke(endlessWaveIndex);
 
             if (formation != null)
             {
@@ -140,6 +145,7 @@ public class EnemySpawner : MonoBehaviour
                 }
             }
 
+            endlessWaveIndex++;
             yield return new WaitForSeconds(intervalBetweenFormations);
         }
     }

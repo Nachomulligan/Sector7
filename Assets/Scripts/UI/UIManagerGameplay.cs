@@ -36,6 +36,13 @@ public class UIManagerGameplay : MonoBehaviour
 
     private ScoreManager scoreManager;
     private GameManager gameManager;
+    private bool hasStarted;
+
+    private void Start()
+    {
+        hasStarted = true;
+        BindGameplayServices();
+    }
 
     private void OnEnable()
     {
@@ -79,18 +86,7 @@ public class UIManagerGameplay : MonoBehaviour
             pausePanel.SetActive(false);
         }
 
-        if (ServiceLocator.HasInstance && ServiceLocator.Instance.TryGet(out scoreManager))
-        {
-            scoreManager.OnScoreChanged += HandleScoreChanged;
-            HandleScoreChanged(scoreManager.CurrentScore);
-        }
-
-        if (ServiceLocator.HasInstance && ServiceLocator.Instance.TryGet(out gameManager))
-        {
-            gameManager.OnWaveChanged += HandleWaveChanged;
-            gameManager.OnGameOver += HandleGameOver;
-            gameManager.OnPauseChanged += HandlePauseChanged;
-        }
+        if (hasStarted) BindGameplayServices();
 
         if (gameOverPanel != null)
         {
@@ -141,17 +137,7 @@ public class UIManagerGameplay : MonoBehaviour
             pauseMainMenuButton.onClick.RemoveListener(HandleMainMenuButtonPressed);
         }
 
-        if (scoreManager != null)
-        {
-            scoreManager.OnScoreChanged -= HandleScoreChanged;
-        }
-
-        if (gameManager != null)
-        {
-            gameManager.OnWaveChanged -= HandleWaveChanged;
-            gameManager.OnGameOver -= HandleGameOver;
-            gameManager.OnPauseChanged -= HandlePauseChanged;
-        }
+        UnbindGameplayServices();
 
         if (reviveButton != null)
         {
@@ -184,7 +170,7 @@ public class UIManagerGameplay : MonoBehaviour
     {
         if (waveText != null)
         {
-            waveText.text = $"{waveNumber}";
+            waveText.text = waveNumber.ToString();
         }
     }
 
@@ -271,5 +257,42 @@ public class UIManagerGameplay : MonoBehaviour
         {
             gameManager.Resume();
         }
+    }
+
+    private void BindGameplayServices()
+    {
+        UnbindGameplayServices();
+
+        if (ServiceLocator.Instance.TryGet(out scoreManager))
+        {
+            scoreManager.OnScoreChanged += HandleScoreChanged;
+            HandleScoreChanged(scoreManager.CurrentScore);
+        }
+
+        if (ServiceLocator.Instance.TryGet(out gameManager))
+        {
+            gameManager.OnWaveChanged += HandleWaveChanged;
+            gameManager.OnGameOver += HandleGameOver;
+            gameManager.OnPauseChanged += HandlePauseChanged;
+
+            if (gameManager.CurrentWaveNumber > 0)
+                HandleWaveChanged(gameManager.CurrentWaveNumber);
+        }
+    }
+
+    private void UnbindGameplayServices()
+    {
+        if (scoreManager != null)
+            scoreManager.OnScoreChanged -= HandleScoreChanged;
+
+        if (gameManager != null)
+        {
+            gameManager.OnWaveChanged -= HandleWaveChanged;
+            gameManager.OnGameOver -= HandleGameOver;
+            gameManager.OnPauseChanged -= HandlePauseChanged;
+        }
+
+        scoreManager = null;
+        gameManager = null;
     }
 }

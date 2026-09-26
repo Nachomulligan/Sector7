@@ -12,6 +12,9 @@ public class EnemyMecha : MonoBehaviour, IPoolable
     [SerializeField] private WeaponStrategySO weapon;
     [SerializeField] private Transform firePoint;
 
+    [Header("Recompensa")]
+    [Min(0)] [SerializeField] private int scoreValue = 100;
+
     [Header("Movimiento")]
     [Tooltip("Patrón de vuelo de este enemigo. Cambiarlo (o crear uno nuevo) no requiere tocar esta clase.")]
     [SerializeField] private MovementStrategySO movement;
@@ -88,6 +91,8 @@ public class EnemyMecha : MonoBehaviour, IPoolable
 
     private void HandleDeath(GameObject killer)
     {
+        GameEvents.RaiseEnemyDied(gameObject);
+        GameEvents.RaiseEnemyKilledScored(scoreValue);
         Despawn();
     }
 
@@ -131,8 +136,6 @@ public class EnemyMecha : MonoBehaviour, IPoolable
 
         returnNotified = true;
         OnReturnedToPool?.Invoke(this);
-    
-        GameEvents.RaiseEnemyDied(gameObject);
     }
 
 }

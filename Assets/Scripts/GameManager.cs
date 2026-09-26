@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 
 /// <summary>
-/// Lógica de partida pura. NO conoce prefabs, spawn points ni formaciones —
+/// LÃ³gica de partida pura. NO conoce prefabs, spawn points ni formaciones â€”
 /// eso es responsabilidad exclusiva de EnemySpawner. Este script:
 ///   1) Detiene el spawn unos segundos cuando termina una ronda completa.
 ///   2) Corta todo si el player muere (Game Over).
@@ -25,10 +25,14 @@ public class GameManager : MonoBehaviour
 
     public bool IsGameOver { get; private set; }
     public bool IsPaused { get; private set; }
+    public int CurrentWaveNumber { get; private set; }
+    public int TotalWaves => enemySpawner != null ? enemySpawner.WaveCount : 0;
 
     // ---------- EVENTOS PARA LA UI ----------
-    [Tooltip("Se dispara cuando arranca una nueva wave dentro del spawner (índice 1-based, listo para mostrar).")]
+    [Tooltip("Se dispara cuando arranca una nueva wave dentro del spawner (Ã­ndice 1-based, listo para mostrar).")]
     public event Action<int> OnWaveChanged;
+    public event Action<int> OnWaveCompleted;
+    public event Action OnRoundCompleted;
     public event Action OnGameOver;
     public event Action<bool> OnPauseChanged;
 
@@ -42,6 +46,7 @@ public class GameManager : MonoBehaviour
         {
             enemySpawner.OnAllWavesFinished += HandleRoundFinished;
             enemySpawner.OnWaveStarted += HandleWaveStarted;
+            enemySpawner.OnWaveFinished += HandleWaveFinished;
         }
 
         if (playerHealth != null)
@@ -56,6 +61,7 @@ public class GameManager : MonoBehaviour
         {
             enemySpawner.OnAllWavesFinished -= HandleRoundFinished;
             enemySpawner.OnWaveStarted -= HandleWaveStarted;
+            enemySpawner.OnWaveFinished -= HandleWaveFinished;
         }
 
         if (playerHealth != null)
@@ -75,8 +81,13 @@ public class GameManager : MonoBehaviour
 
     private void HandleWaveStarted(int waveIndex, WaveDefinitionSO wave)
     {
-        // waveIndex del spawner es 0-based; para mostrar en UI conviene 1-based.
-        OnWaveChanged?.Invoke(waveIndex + 1);
+        CurrentWaveNumber = waveIndex + 1;
+        OnWaveChanged?.Invoke(CurrentWaveNumber);
+    }
+
+    private void HandleWaveFinished(int waveIndex, WaveDefinitionSO wave)
+    {
+        OnWaveCompleted?.Invoke(waveIndex + 1);
     }
 
     private void HandleRoundFinished()
@@ -85,6 +96,8 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
+
+        OnRoundCompleted?.Invoke();
 
         if (roundGapRoutine != null)
         {
@@ -129,7 +142,7 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Llamado desde el botón "Revive" del panel de Game Over. Reactiva al player,
+    /// Llamado desde el botÃ³n "Revive" del panel de Game Over. Reactiva al player,
     /// le devuelve la vida completa y vuelve a arrancar las oleadas desde cero.
     /// </summary>
     public void Revive()
@@ -145,7 +158,7 @@ public class GameManager : MonoBehaviour
 
         if (playerHealth != null)
         {
-            // Mecha.HandleDeath desactiva el GameObject entero al morir, así que hay
+            // Mecha.HandleDeath desactiva el GameObject entero al morir, asÃ­ que hay
             // que reactivarlo antes de poder resetear su vida.
             playerHealth.gameObject.SetActive(true);
             playerHealth.ResetHealth();
@@ -158,7 +171,7 @@ public class GameManager : MonoBehaviour
     }
 
     // =====================================================
-    // PAUSA (menú)
+    // PAUSA (menÃº)
     // =====================================================
 
     public void TogglePause() => SetPaused(!IsPaused);
