@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: Ability_Bomb
   m_EditorClassIdentifier: Assembly-CSharp::BombStrategy
   cooldown: 8
+  icon: {fileID: -1643389817789898457, guid: 5bbc3351b6e0aa248bf33a64f930744a, type: 3}
   damage: 999
   blastRadius: 30

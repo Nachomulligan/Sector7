@@ -1,6 +1,5 @@
-using UnityEngine;
-
 using System;
+using UnityEngine;
 
 public class ScoreManager : MonoBehaviour
 {
@@ -12,6 +11,8 @@ public class ScoreManager : MonoBehaviour
     {
         ServiceLocator.Instance.Register<ScoreManager>(this);
         GameEvents.OnEnemyKilledScored += HandleEnemyKilled;
+
+        Debug.Log("[ScoreManager] Registrado y suscripto a GameEvents.OnEnemyKilledScored.");
     }
 
     private void OnDisable()
@@ -26,6 +27,7 @@ public class ScoreManager : MonoBehaviour
 
     private void HandleEnemyKilled(int scoreValue)
     {
+        Debug.Log($"[ScoreManager] Recibí GameEvents.OnEnemyKilledScored con valor {scoreValue}.");
         AddScore(scoreValue);
     }
 
@@ -34,6 +36,7 @@ public class ScoreManager : MonoBehaviour
         if (amount == 0) return;
 
         CurrentScore = Mathf.Max(0, CurrentScore + amount);
+        Debug.Log($"[ScoreManager] Score actualizado a {CurrentScore}.");
         OnScoreChanged?.Invoke(CurrentScore);
     }
 

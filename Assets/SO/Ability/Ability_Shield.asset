@@ -13,4 +13,5 @@ MonoBehaviour:
   m_Name: Ability_Shield
   m_EditorClassIdentifier: Assembly-CSharp::ShieldStrategy
   cooldown: 10
+  icon: {fileID: 7211491898151854808, guid: 5bbc3351b6e0aa248bf33a64f930744a, type: 3}
   duration: 3

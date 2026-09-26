@@ -9,7 +9,11 @@ public class MechaAbility : MonoBehaviour
 
     public event Action<float> OnCooldownChanged;
 
+    /// <summary>Se dispara cada vez que cambia el SO de habilidad equipado (ej: al armar loadout).</summary>
+    public event Action<SkillStrategySO> OnAbilityChanged;
+
     public bool IsReady => cooldownTimer <= 0f;
+    public SkillStrategySO CurrentAbility => ability;
 
     private float cooldownTimer;
     private Health health;
@@ -58,5 +62,6 @@ public class MechaAbility : MonoBehaviour
         ability = newAbility;
         cooldownTimer = 0f;
         OnCooldownChanged?.Invoke(0f);
+        OnAbilityChanged?.Invoke(ability);
     }
 }
