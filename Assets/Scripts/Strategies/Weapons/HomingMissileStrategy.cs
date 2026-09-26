@@ -9,14 +9,11 @@ public class HomingMissileStrategy : WeaponStrategySO
 
     private readonly List<ICombatTarget> targets = new List<ICombatTarget>();
 
-    public override void Fire(Vector2 origin, Transform firingMecha)
+    public override void Fire(WeaponFireContext context)
     {
-        Faction faction = ResolveFaction(firingMecha);
-        Vector2 forward = ResolveForwardDirection(faction);
-
-        Transform target = FindNearestEnemy(origin, faction);
-
-        SpawnProjectile(origin, forward, faction, target);
+        Vector2 forward = ResolveForwardDirection(context.Faction);
+        Transform target = FindNearestEnemy(context.Origin, context.Faction);
+        SpawnProjectile(context, forward, target);
     }
 
     private Transform FindNearestEnemy(Vector2 origin, Faction ownerFaction)

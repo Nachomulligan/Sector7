@@ -16,11 +16,13 @@ public class MechaAbility : MonoBehaviour
     public SkillStrategySO CurrentAbility => ability;
 
     private float cooldownTimer;
+    private float effectiveCooldown;
     private Health health;
 
     private void Awake()
     {
         health = GetComponent<Health>();
+        effectiveCooldown = ability != null ? ability.Cooldown : 0f;
     }
 
     private void Update()
@@ -37,8 +39,8 @@ public class MechaAbility : MonoBehaviour
             cooldownTimer = 0f;
         }
 
-        float normalized = ability != null && ability.Cooldown > 0f
-            ? cooldownTimer / ability.Cooldown
+        float normalized = ability != null && effectiveCooldown > 0f
+            ? cooldownTimer / effectiveCooldown
             : 0f;
 
         OnCooldownChanged?.Invoke(normalized);
@@ -52,14 +54,18 @@ public class MechaAbility : MonoBehaviour
         }
 
         ability.Activate(transform);
-        cooldownTimer = ability.Cooldown;
+        cooldownTimer = effectiveCooldown;
         OnCooldownChanged?.Invoke(1f);
     }
 
 
-    public void SetAbility(SkillStrategySO newAbility)
+    public void SetAbility(SkillStrategySO newAbility, float levelMultiplier = 1f,
+        float cooldownMultiplier = 1f)
     {
         ability = newAbility;
+        effectiveCooldown = ability != null
+            ? ability.Cooldown * Mathf.Max(0.05f, cooldownMultiplier) / Mathf.Max(0.05f, levelMultiplier)
+            : 0f;
         cooldownTimer = 0f;
         OnCooldownChanged?.Invoke(0f);
         OnAbilityChanged?.Invoke(ability);

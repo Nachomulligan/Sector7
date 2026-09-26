@@ -12,7 +12,7 @@ public sealed class PlayerInventory : MonoBehaviour
     [SerializeField] private List<GachaRewardSO> startingRewards = new List<GachaRewardSO>();
 
     private readonly Dictionary<GachaRewardSO, int> owned = new Dictionary<GachaRewardSO, int>();
-    private readonly Dictionary<MechaPresetSO, int> ascensions = new Dictionary<MechaPresetSO, int>();
+    private readonly Dictionary<GachaRewardSO, int> levels = new Dictionary<GachaRewardSO, int>();
     private int softCurrency;
     private int premiumCurrency;
 
@@ -23,6 +23,7 @@ public sealed class PlayerInventory : MonoBehaviour
     public MechaPresetSO EquippedMecha { get; private set; }
     public WeaponStrategySO EquippedWeapon { get; private set; }
     public SkillStrategySO EquippedAbility { get; private set; }
+    public CompanionPresetSO EquippedCompanion { get; private set; }
 
     private void Awake()
     {
@@ -33,13 +34,16 @@ public sealed class PlayerInventory : MonoBehaviour
         {
             if (reward == null || !reward.IsValid) continue;
             owned[reward] = Count(reward) + 1;
+            levels[reward] = Mathf.Max(1, Level(reward));
 
             if (EquippedMecha == null && reward.Kind == GachaRewardKind.Mecha)
-            {
                 EquippedMecha = reward.Mecha;
-                EquippedWeapon = reward.Mecha.StartingWeapon;
-                EquippedAbility = reward.Mecha.StartingAbility;
-            }
+            else if (EquippedWeapon == null && reward.Kind == GachaRewardKind.Weapon)
+                EquippedWeapon = reward.Weapon;
+            else if (EquippedAbility == null && reward.Kind == GachaRewardKind.Ability)
+                EquippedAbility = reward.Ability;
+            else if (EquippedCompanion == null && reward.Kind == GachaRewardKind.Companion)
+                EquippedCompanion = reward.Companion;
         }
     }
 
@@ -53,8 +57,8 @@ public sealed class PlayerInventory : MonoBehaviour
     public int Count(GachaRewardSO reward) =>
         reward != null && owned.TryGetValue(reward, out int count) ? count : 0;
 
-    public int Ascension(MechaPresetSO mecha) =>
-        mecha != null && ascensions.TryGetValue(mecha, out int level) ? level : 0;
+    public int Level(GachaRewardSO reward) =>
+        reward != null && levels.TryGetValue(reward, out int level) ? level : 0;
 
     public bool OwnsMecha(MechaPresetSO mecha)
     {
@@ -77,6 +81,14 @@ public sealed class PlayerInventory : MonoBehaviour
         if (ability == null) return false;
         foreach (KeyValuePair<GachaRewardSO, int> entry in owned)
             if (entry.Value > 0 && entry.Key.Kind == GachaRewardKind.Ability && entry.Key.Ability == ability) return true;
+        return false;
+    }
+
+    public bool OwnsCompanion(CompanionPresetSO companion)
+    {
+        if (companion == null) return false;
+        foreach (KeyValuePair<GachaRewardSO, int> entry in owned)
+            if (entry.Value > 0 && entry.Key.Kind == GachaRewardKind.Companion && entry.Key.Companion == companion) return true;
         return false;
     }
 
@@ -103,17 +115,10 @@ public sealed class PlayerInventory : MonoBehaviour
     public bool Grant(GachaRewardSO reward)
     {
         if (reward == null || !reward.IsValid) return false;
-        bool duplicate = reward.Kind == GachaRewardKind.Mecha
-            ? OwnsMecha(reward.Mecha) : Count(reward) > 0;
+        bool duplicate = Count(reward) > 0;
         owned[reward] = Count(reward) + 1;
-
-        if (reward.Kind == GachaRewardKind.Mecha && duplicate)
-        {
-            MechaPresetSO mecha = reward.Mecha;
-            ascensions[mecha] = Mathf.Min(Ascension(mecha) + 1, mecha.MaxAscension);
-            if (EquippedMecha == mecha && TryGetActivePlayer(out Mecha active, out _))
-                ApplyEquippedLoadout(active);
-        }
+        levels[reward] = duplicate ? Mathf.Min(Mathf.Max(1, Level(reward)) + 1, reward.MaxLevel) : 1;
+        if (duplicate) ApplyToActivePlayer();
 
         OnChanged?.Invoke();
         return duplicate;
@@ -123,8 +128,6 @@ public sealed class PlayerInventory : MonoBehaviour
     {
         if (!OwnsMecha(preset)) return false;
         EquippedMecha = preset;
-        EquippedWeapon = preset.StartingWeapon;
-        EquippedAbility = preset.StartingAbility;
         ApplyToActivePlayer();
         OnChanged?.Invoke();
         return true;
@@ -148,6 +151,15 @@ public sealed class PlayerInventory : MonoBehaviour
         return true;
     }
 
+    public bool TryEquipCompanion(CompanionPresetSO companion)
+    {
+        if (!OwnsCompanion(companion)) return false;
+        EquippedCompanion = companion;
+        ApplyToActivePlayer();
+        OnChanged?.Invoke();
+        return true;
+    }
+
     public bool TryEquipReward(GachaRewardSO reward)
     {
         if (Count(reward) == 0) return false;
@@ -156,6 +168,7 @@ public sealed class PlayerInventory : MonoBehaviour
             case GachaRewardKind.Mecha: return TryEquipMecha(reward.Mecha);
             case GachaRewardKind.Weapon: return TryEquipWeapon(reward.Weapon);
             case GachaRewardKind.Ability: return TryEquipAbility(reward.Ability);
+            case GachaRewardKind.Companion: return TryEquipCompanion(reward.Companion);
             default: return false;
         }
     }
@@ -165,20 +178,51 @@ public sealed class PlayerInventory : MonoBehaviour
     {
         if (mecha == null) return;
 
-        if (EquippedWeapon != null)
-            mecha.SetWeapon(EquippedWeapon);
+        GachaRewardSO mechaReward = FindReward(GachaRewardKind.Mecha, EquippedMecha);
+        GachaRewardSO weaponReward = FindReward(GachaRewardKind.Weapon, EquippedWeapon);
+        GachaRewardSO abilityReward = FindReward(GachaRewardKind.Ability, EquippedAbility);
+        GachaRewardSO companionReward = FindReward(GachaRewardKind.Companion, EquippedCompanion);
 
-        if (mecha.TryGetComponent(out MechaAbility mechaAbility) && EquippedAbility != null)
-            mechaAbility.SetAbility(EquippedAbility);
+        float mechaLevel = Multiplier(mechaReward);
+        float companionLevel = Multiplier(companionReward);
+        MechaStatController stats = mecha.GetComponent<MechaStatController>();
+        if (stats == null) stats = mecha.gameObject.AddComponent<MechaStatController>();
+        stats.Recalculate(EquippedMecha, mechaLevel, EquippedCompanion, companionLevel);
+        mecha.SetDamage(stats.Current.Damage);
+        mecha.SetWeapon(EquippedWeapon, Multiplier(weaponReward));
+
+        if (mecha.TryGetComponent(out MechaAbility mechaAbility))
+            mechaAbility.SetAbility(EquippedAbility, Multiplier(abilityReward), stats.Current.AbilityCooldownMultiplier);
+
+        CompanionController companionController = mecha.GetComponent<CompanionController>();
+        if (companionController == null) companionController = mecha.gameObject.AddComponent<CompanionController>();
+        companionController.SetCompanion(EquippedCompanion);
 
         if (EquippedMecha != null)
         {
             if (EquippedMecha.Appearance != null && mecha.TryGetComponent(out SpriteRenderer spriteRenderer))
                 spriteRenderer.sprite = EquippedMecha.Appearance;
-
-            if (mecha.TryGetComponent(out Health health))
-                health.SetBonusMaxHealth(Ascension(EquippedMecha) * EquippedMecha.HealthBonusPerAscension);
+            if (mecha.TryGetComponent(out SpriteRenderer tintedRenderer))
+                tintedRenderer.color = EquippedMecha.AppearanceColor;
         }
+    }
+
+    private float Multiplier(GachaRewardSO reward) => reward != null
+        ? reward.LevelMultiplier(Mathf.Max(1, Level(reward))) : 1f;
+
+    private GachaRewardSO FindReward(GachaRewardKind kind, UnityEngine.Object asset)
+    {
+        if (asset == null) return null;
+        foreach (KeyValuePair<GachaRewardSO, int> entry in owned)
+        {
+            GachaRewardSO reward = entry.Key;
+            if (reward == null || reward.Kind != kind) continue;
+            UnityEngine.Object candidate = kind == GachaRewardKind.Mecha ? reward.Mecha
+                : kind == GachaRewardKind.Weapon ? reward.Weapon
+                : kind == GachaRewardKind.Ability ? reward.Ability : reward.Companion;
+            if (candidate == asset) return reward;
+        }
+        return null;
     }
 
     private void ApplyToActivePlayer()

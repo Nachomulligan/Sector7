@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MechaPresetSO
   displayName: Nova
   appearance: {fileID: 0}
-  startingWeapon: {fileID: 11400000, guid: 606f644aad103494c904a092a21e6db4, type: 2}
-  startingAbility: {fileID: 11400000, guid: 0ba7488254374c24380d284d1ec75a94, type: 2}
-  healthBonusPerAscension: 30
-  maxAscension: 5
+  appearanceColor: {r: 1, g: 0.35, b: 0.65, a: 1}
+  baseMaxHealth: 90
+  baseDamage: 16

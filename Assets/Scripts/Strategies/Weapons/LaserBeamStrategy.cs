@@ -8,22 +8,21 @@ public class LaserBeamStrategy : WeaponStrategySO
     [SerializeField] private LayerMask hitMask;
     [SerializeField] private GameObject beamVisualPrefab;
 
-    public override void Fire(Vector2 origin, Transform firingMecha)
+    public override void Fire(WeaponFireContext context)
     {
-        Faction faction = ResolveFaction(firingMecha);
-        Vector2 direction = ResolveForwardDirection(faction);
+        Vector2 direction = ResolveForwardDirection(context.Faction);
 
-        RaycastHit2D hit = Physics2D.Raycast(origin, direction, maxRange, hitMask);
+        RaycastHit2D hit = Physics2D.Raycast(context.Origin, direction, maxRange, hitMask);
         float beamLength = hit.collider != null ? hit.distance : maxRange;
 
         if (hit.collider != null &&
             hit.collider.TryGetComponent(out IDamageable damageable) &&
-            damageable.Faction != faction)
+            damageable.Faction != context.Faction)
         {
-            damageable.TakeDamage(damage, null);
+            damageable.TakeDamage(context.Damage, context.Owner != null ? context.Owner.gameObject : null);
         }
 
-        SpawnBeamVisual(origin, direction, beamLength);
+        SpawnBeamVisual(context.Origin, direction, beamLength);
     }
 
     private void SpawnBeamVisual(Vector2 origin, Vector2 direction, float length)

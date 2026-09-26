@@ -42,3 +42,5 @@ MonoBehaviour:
     weight: 1
   - reward: {fileID: 11400000, guid: c4503c66575d471f9ed90d7081d36c96, type: 2}
     weight: 1
+  - reward: {fileID: 11400000, guid: afbf77ecbecc04a46840e93c10dca7c2, type: 2}
+    weight: 1

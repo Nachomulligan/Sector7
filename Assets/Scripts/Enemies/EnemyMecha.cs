@@ -11,6 +11,7 @@ public class EnemyMecha : MonoBehaviour, IPoolable
     [Tooltip("Dejar en None para enemigos que sólo se mueven, embisten o hacen daño por contacto.")]
     [SerializeField] private WeaponStrategySO weapon;
     [SerializeField] private Transform firePoint;
+    [Min(1)] [SerializeField] private int attackDamage = 10;
 
     [Header("Recompensa")]
     [Min(0)] [SerializeField] private int scoreValue = 100;
@@ -71,7 +72,7 @@ public class EnemyMecha : MonoBehaviour, IPoolable
         if (cooldownTimer <= 0f)
         {
             Vector2 origin = firePoint != null ? (Vector2)firePoint.position : (Vector2)transform.position;
-            weapon.Fire(origin, transform);
+            weapon.Fire(new WeaponFireContext(origin, transform, health.Faction, attackDamage));
             cooldownTimer = weapon.Cooldown;
         }
     }

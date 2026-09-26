@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5107914ef9b50a642bc1eb35b16c246d, type: 3}
+  m_Name: Companion_Scout
+  m_EditorClassIdentifier: Assembly-CSharp::CompanionPresetSO
+  displayName: Scout
+  visualPrefab: {fileID: 5352854826207038817, guid: 6d6b592eabe0457448d72a7f13c8f64d, type: 3}
+  appearance: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  appearanceColor: {r: 0.25, g: 0.9, b: 1, a: 1}
+  followOffset: {x: 0.8, y: -0.8}
+  followSmoothness: 10
+  modifier: {fileID: 11400000, guid: 2913b7ea4ff0e2844857e93fdd4c398a, type: 2}

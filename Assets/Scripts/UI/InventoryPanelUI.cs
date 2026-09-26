@@ -14,6 +14,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
     [SerializeField] private Button mechaTab;
     [SerializeField] private Button weaponTab;
     [SerializeField] private Button abilityTab;
+    [SerializeField] private Button companionTab;
 
     private PlayerInventory inventory;
     private GachaRewardKind currentKind = GachaRewardKind.Mecha;
@@ -32,6 +33,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
         mechaTab.onClick.AddListener(ShowMechas);
         weaponTab.onClick.AddListener(ShowWeapons);
         abilityTab.onClick.AddListener(ShowAbilities);
+        if (companionTab != null) companionTab.onClick.AddListener(ShowCompanions);
         equipButton.onClick.AddListener(EquipSelected);
         inventory.OnChanged += Refresh;
         itemTemplate.gameObject.SetActive(false);
@@ -44,12 +46,14 @@ public sealed class InventoryPanelUI : MonoBehaviour
         if (mechaTab != null) mechaTab.onClick.RemoveListener(ShowMechas);
         if (weaponTab != null) weaponTab.onClick.RemoveListener(ShowWeapons);
         if (abilityTab != null) abilityTab.onClick.RemoveListener(ShowAbilities);
+        if (companionTab != null) companionTab.onClick.RemoveListener(ShowCompanions);
         if (equipButton != null) equipButton.onClick.RemoveListener(EquipSelected);
     }
 
     public void ShowMechas() => SelectKind(GachaRewardKind.Mecha);
     public void ShowWeapons() => SelectKind(GachaRewardKind.Weapon);
     public void ShowAbilities() => SelectKind(GachaRewardKind.Ability);
+    public void ShowCompanions() => SelectKind(GachaRewardKind.Companion);
 
     private void SelectKind(GachaRewardKind kind)
     {
@@ -63,7 +67,8 @@ public sealed class InventoryPanelUI : MonoBehaviour
     {
         equippedText.text = $"Mecha: {NameOf(inventory.EquippedMecha)}   •   " +
             $"Arma: {NameOf(inventory.EquippedWeapon)}   •   " +
-            $"Habilidad: {NameOf(inventory.EquippedAbility)}";
+            $"Habilidad: {NameOf(inventory.EquippedAbility)}   •   " +
+            $"Apoyo: {NameOf(inventory.EquippedCompanion)}";
         RefreshItems();
         RefreshDetails();
     }
@@ -85,9 +90,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
             card.gameObject.SetActive(true);
             card.image.color = RarityColor(reward.Rarity);
             TMP_Text label = card.GetComponentInChildren<TMP_Text>(true);
-            string suffix = reward.Kind == GachaRewardKind.Mecha
-                ? $"  • Asc. {inventory.Ascension(reward.Mecha)}"
-                : item.Value > 1 ? $"  • x{item.Value}" : string.Empty;
+            string suffix = $"  • Nv. {inventory.Level(reward)}";
             label.text = $"{reward.DisplayName}  [{reward.Rarity}]{suffix}";
             GachaRewardSO captured = reward;
             card.onClick.AddListener(() => SelectReward(captured));
@@ -122,6 +125,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
     {
         if (asset == null) return "Sin equipar";
         if (asset is MechaPresetSO mecha) return mecha.DisplayName;
+        if (asset is CompanionPresetSO companion) return companion.DisplayName;
         return asset.name.Replace("Weapon_", string.Empty).Replace("Ability_", string.Empty);
     }
 

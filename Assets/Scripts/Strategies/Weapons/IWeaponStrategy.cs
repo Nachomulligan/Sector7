@@ -1,6 +1,5 @@
-using UnityEngine;
 public interface IWeaponStrategy
 {
-    void Fire(Vector2 origin, Transform firingMecha);
+    void Fire(WeaponFireContext context);
     float Cooldown { get; }
 }

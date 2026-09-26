@@ -100,6 +100,16 @@ public class Health : MonoBehaviour, IDamageable, IPlayerTarget
         OnHealthChanged?.Invoke(currentHealth, MaxHealth);
     }
 
+    public void SetMaxHealth(int value)
+    {
+        int previousMax = MaxHealth;
+        maxHealth = Mathf.Max(1, value);
+        bonusMaxHealth = 0;
+        if (currentHealth > 0)
+            currentHealth = Mathf.Clamp(Mathf.RoundToInt(currentHealth * (float)MaxHealth / Mathf.Max(1, previousMax)), 1, MaxHealth);
+        OnHealthChanged?.Invoke(currentHealth, MaxHealth);
+    }
+
   
     public void ActivateShield(float duration)
     {

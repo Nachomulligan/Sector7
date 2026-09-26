@@ -14,7 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MechaPresetSO
   displayName: Falcon
   appearance: {fileID: 0}
-  startingWeapon: {fileID: 11400000, guid: 8c2b79a7d354aa944b094708b443182d, type: 2}
-  startingAbility: {fileID: 11400000, guid: fcf60ecb88e786b4893b4794a71fa218, type: 2}
-  healthBonusPerAscension: 20
-  maxAscension: 5
+  appearanceColor: {r: 0.25, g: 0.85, b: 1, a: 1}
+  baseMaxHealth: 120
+  baseDamage: 12

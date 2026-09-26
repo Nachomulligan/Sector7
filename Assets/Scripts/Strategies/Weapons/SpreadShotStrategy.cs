@@ -7,14 +7,13 @@ public class SpreadShotStrategy : WeaponStrategySO
     [SerializeField] private int projectileCount = 3;
     [SerializeField] private float spreadAngle = 30f;
 
-    public override void Fire(Vector2 origin, Transform firingMecha)
+    public override void Fire(WeaponFireContext context)
     {
-        Faction faction = ResolveFaction(firingMecha);
-        Vector2 forward = ResolveForwardDirection(faction);
+        Vector2 forward = ResolveForwardDirection(context.Faction);
 
         if (projectileCount <= 1)
         {
-            SpawnProjectile(origin, forward, faction);
+            SpawnProjectile(context, forward);
             return;
         }
 
@@ -25,7 +24,7 @@ public class SpreadShotStrategy : WeaponStrategySO
         {
             float angle = -halfSpread + (angleStep * i);
             Vector2 direction = Quaternion.Euler(0f, 0f, angle) * forward;
-            SpawnProjectile(origin, direction, faction);
+            SpawnProjectile(context, direction);
         }
     }
 }
