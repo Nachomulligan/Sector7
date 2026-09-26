@@ -8,6 +8,9 @@ public class BombStrategy : SkillStrategySO
     [SerializeField] private int damage = 999;
     [SerializeField] private float blastRadius = 30f;
 
+    public int Damage => damage;
+    public float BlastRadius => blastRadius;
+
     public override void Activate(Transform user)
     {
         Faction userFaction = ResolveFaction(user);

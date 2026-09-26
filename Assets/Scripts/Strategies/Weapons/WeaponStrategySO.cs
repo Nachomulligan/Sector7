@@ -9,6 +9,15 @@ public abstract class WeaponStrategySO : ScriptableObject, IWeaponStrategy
 
     public float Cooldown => cooldown;
 
+    public virtual string GetStatsDescription(float levelMultiplier)
+    {
+        float effectiveCooldown = cooldown / Mathf.Max(0.05f, levelMultiplier);
+        float shotsPerSecond = effectiveCooldown > 0f ? 1f / effectiveCooldown : 0f;
+        return $"Cadencia: {shotsPerSecond:0.##} disparos/s\n" +
+            $"Intervalo: {effectiveCooldown:0.##} s\n" +
+            $"Velocidad de proyectil: {projectileSpeed:0.##}";
+    }
+
     public abstract void Fire(WeaponFireContext context);
 
     protected Vector2 ResolveForwardDirection(Faction faction)

@@ -7,6 +7,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
 {
     [SerializeField] private TMP_Text equippedText;
     [SerializeField] private TMP_Text detailText;
+    [SerializeField] private TMP_Text statsText;
     [SerializeField] private RectTransform itemContent;
     [SerializeField] private Button itemTemplate;
     [SerializeField] private TMP_Text emptyText;
@@ -119,6 +120,40 @@ public sealed class InventoryPanelUI : MonoBehaviour
         equipButton.interactable = selectedReward != null;
         detailText.text = selectedReward == null ? "Elegi un objeto desbloqueado"
             : $"{selectedReward.DisplayName}\n{selectedReward.Rarity}";
+        statsText.text = selectedReward == null ? string.Empty : BuildStatsText(selectedReward);
+    }
+
+    private string BuildStatsText(GachaRewardSO reward)
+    {
+        int level = Mathf.Max(1, inventory.Level(reward));
+        float multiplier = reward.LevelMultiplier(level);
+        switch (reward.Kind)
+        {
+            case GachaRewardKind.Mecha:
+                return $"Vida máxima: {Mathf.RoundToInt(reward.Mecha.BaseMaxHealth * multiplier)}\n" +
+                    $"Daño: {Mathf.RoundToInt(reward.Mecha.BaseDamage * multiplier)}";
+            case GachaRewardKind.Weapon:
+                return reward.Weapon.GetStatsDescription(multiplier);
+            case GachaRewardKind.Ability:
+                return AbilityStats(reward.Ability, multiplier);
+            case GachaRewardKind.Companion:
+                return reward.Companion.Modifier != null
+                    ? reward.Companion.Modifier.GetStatsDescription(multiplier)
+                    : "Sin modificadores";
+            default:
+                return string.Empty;
+        }
+    }
+
+    private static string AbilityStats(SkillStrategySO ability, float levelMultiplier)
+    {
+        float cooldown = ability.Cooldown / Mathf.Max(0.05f, levelMultiplier);
+        string text = $"Cooldown: {cooldown:0.##} s";
+        if (ability is BombStrategy bomb)
+            return text + $"\nDaño: {bomb.Damage}\nRadio: {bomb.BlastRadius:0.##}";
+        if (ability is ShieldStrategy shield)
+            return text + $"\nDuración: {shield.Duration:0.##} s";
+        return text;
     }
 
     private static string NameOf(Object asset)
@@ -140,7 +175,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
         }
     }
 
-    private bool HasReferences => equippedText != null && detailText != null && itemContent != null &&
+    private bool HasReferences => equippedText != null && detailText != null && statsText != null && itemContent != null &&
         itemTemplate != null && emptyText != null && equipButton != null && mechaTab != null &&
         weaponTab != null && abilityTab != null;
 }
