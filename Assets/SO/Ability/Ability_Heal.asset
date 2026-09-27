@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Ability_Heal
   m_EditorClassIdentifier: Assembly-CSharp::HealStrategy
   cooldown: 12
-  icon: {fileID: 7211491898151854808, guid: 5bbc3351b6e0aa248bf33a64f930744a, type: 3}
+  icon: {fileID: 2489258271204663530, guid: d8e03800077f33a48a8447fac85ee950, type: 3}
   healAmount: 35
