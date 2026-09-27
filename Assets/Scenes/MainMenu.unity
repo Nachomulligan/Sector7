@@ -468,10 +468,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 51426371}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.87000006, y: 0.37800002}
-  m_AnchorMax: {x: 0.87000006, y: 0.37800002}
-  m_AnchoredPosition: {x: 38.75, y: 245.168}
-  m_SizeDelta: {x: 278.5012, y: 2902.3362}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -148.25, y: -1318.0564}
+  m_SizeDelta: {x: 278.5012, y: 2186.7842}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &982506495
 MonoBehaviour:
@@ -520,8 +520,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 300
-  m_fontSizeBase: 300
+  m_fontSize: 200
+  m_fontSizeBase: 200
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -559,7 +559,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 0
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -5.478943, y: -183.13208, z: 0, w: 0}
+  m_margin: {x: -5.478943, y: -183.13208, z: 0, w: -6.9468994}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -606,9 +606,9 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 51426371}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.24466676, y: 0.5}
-  m_AnchorMax: {x: 0.24466676, y: 0.5}
-  m_AnchoredPosition: {x: -223, y: 179}
+  m_AnchorMin: {x: 0, y: 0.5}
+  m_AnchorMax: {x: 0, y: 0.5}
+  m_AnchoredPosition: {x: 129, y: 179}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1551841379
@@ -763,7 +763,8 @@ MonoBehaviour:
   scoreText: {fileID: 0}
   waveText: {fileID: 0}
   gameOverPanel: {fileID: 0}
-  reviveButton: {fileID: 0}
+  restartButton: {fileID: 0}
+  runRewardText: {fileID: 0}
   mainMenuButton: {fileID: 412538713}
   pauseButton: {fileID: 0}
   pausePanel: {fileID: 0}
