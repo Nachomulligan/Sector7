@@ -153,6 +153,8 @@ public sealed class InventoryPanelUI : MonoBehaviour
             return text + $"\nDaño: {bomb.Damage}\nRadio: {bomb.BlastRadius:0.##}";
         if (ability is ShieldStrategy shield)
             return text + $"\nDuración: {shield.Duration:0.##} s";
+        if (ability is HealStrategy heal)
+            return text + $"\nCuración: {heal.HealAmount}";
         return text;
     }
 

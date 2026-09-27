@@ -19,5 +19,5 @@ MonoBehaviour:
   maxRange: 20
   hitMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   beamVisualPrefab: {fileID: 4767061630015791345, guid: 27dba8732192f224ca6258bf95c444e5, type: 3}

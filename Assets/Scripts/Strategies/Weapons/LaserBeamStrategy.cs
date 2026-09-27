@@ -14,10 +14,11 @@ public class LaserBeamStrategy : WeaponStrategySO
 
         RaycastHit2D hit = Physics2D.Raycast(context.Origin, direction, maxRange, hitMask);
         float beamLength = hit.collider != null ? hit.distance : maxRange;
+        IDamageable damageable = hit.collider != null
+            ? hit.collider.GetComponentInParent<IDamageable>()
+            : null;
 
-        if (hit.collider != null &&
-            hit.collider.TryGetComponent(out IDamageable damageable) &&
-            damageable.Faction != context.Faction)
+        if (damageable != null && damageable.Faction != context.Faction)
         {
             damageable.TakeDamage(context.Damage, context.Owner != null ? context.Owner.gameObject : null);
         }
@@ -34,7 +35,7 @@ public class LaserBeamStrategy : WeaponStrategySO
 
         GameObject instance = PoolManager.Instance.Spawn(
             beamVisualPrefab,
-            origin,
+            origin + direction * (length * 0.5f),
             Quaternion.FromToRotation(Vector3.up, direction)
         );
 
@@ -42,4 +43,12 @@ public class LaserBeamStrategy : WeaponStrategySO
         scale.y = length;
         instance.transform.localScale = scale;
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (hitMask.value == 0)
+            Debug.LogWarning($"{name}: Hit Mask está vacío; el láser no detectará objetivos.", this);
+    }
+#endif
 }
