@@ -2,7 +2,24 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GachaPullFailure { None, MissingBanner, MissingInventory, InsufficientCurrency, InvalidBanner }
+public enum GachaPullFailure { None, MissingBanner, MissingInventory, InsufficientCurrency, InvalidBanner, PendingPull }
+
+public sealed class GachaPendingPull
+{
+    public GachaBannerSO Banner { get; }
+    public GachaRewardSO Reward { get; }
+    public bool PityTriggered { get; }
+    public int PreviousPullsSinceEpic { get; }
+
+    public GachaPendingPull(GachaBannerSO banner, GachaRewardSO reward,
+        bool pityTriggered, int previousPullsSinceEpic)
+    {
+        Banner = banner;
+        Reward = reward;
+        PityTriggered = pityTriggered;
+        PreviousPullsSinceEpic = previousPullsSinceEpic;
+    }
+}
 
 public sealed class GachaPullResult
 {
@@ -26,8 +43,11 @@ public sealed class GachaService : MonoBehaviour
     [SerializeField] private GachaBannerSO defaultBanner;
 
     private readonly Dictionary<string, int> pullsSinceEpic = new Dictionary<string, int>();
+    private GachaPendingPull pendingPull;
+    public event Action<GachaPendingPull> OnPullPending;
     public event Action<GachaPullResult> OnPullCompleted;
     public GachaBannerSO DefaultBanner => defaultBanner;
+    public bool HasPendingPull => pendingPull != null;
 
     private void OnEnable() => ServiceLocator.Instance.Register(this);
 
@@ -39,11 +59,11 @@ public sealed class GachaService : MonoBehaviour
     public int GetPullsSinceEpic(GachaBannerSO banner) =>
         banner != null && pullsSinceEpic.TryGetValue(banner.BannerId, out int pulls) ? pulls : 0;
 
-    public bool TryPull(GachaBannerSO banner, GachaCurrency currency,
-        out GachaPullResult result, out GachaPullFailure failure)
+    public bool TryBeginPull(GachaBannerSO banner, GachaCurrency currency,
+        out GachaPullFailure failure)
     {
-        result = null;
         failure = GachaPullFailure.None;
+        if (pendingPull != null) { failure = GachaPullFailure.PendingPull; return false; }
         if (banner == null) { failure = GachaPullFailure.MissingBanner; return false; }
         if (!ServiceLocator.Instance.TryGet(out PlayerInventory inventory))
         { failure = GachaPullFailure.MissingInventory; return false; }
@@ -55,17 +75,34 @@ public sealed class GachaService : MonoBehaviour
         if (!GachaRoller.TryRoll(banner, pity, () => UnityEngine.Random.value, out GachaRewardSO reward))
         { failure = GachaPullFailure.InvalidBanner; return false; }
 
-        inventory.TrySpend(currency, banner.Cost(currency));
-        bool duplicate = inventory.Grant(reward);
-        int nextPulls = reward.Rarity >= GachaRarity.Epic ? 0 : previousPulls + 1;
-        pullsSinceEpic[banner.BannerId] = nextPulls;
-        result = new GachaPullResult(reward, duplicate, pity, nextPulls);
-        OnPullCompleted?.Invoke(result);
+        if (!inventory.TrySpend(currency, banner.Cost(currency)))
+        { failure = GachaPullFailure.InsufficientCurrency; return false; }
+
+        pendingPull = new GachaPendingPull(banner, reward, pity, previousPulls);
+        OnPullPending?.Invoke(pendingPull);
         return true;
     }
 
-    public bool TryPullDefault(GachaCurrency currency, out GachaPullResult result,
-        out GachaPullFailure failure) => TryPull(defaultBanner, currency, out result, out failure);
+    public bool TryBeginDefaultPull(GachaCurrency currency, out GachaPullFailure failure) =>
+        TryBeginPull(defaultBanner, currency, out failure);
+
+    public bool TryCompletePendingPull(out GachaPullResult result)
+    {
+        result = null;
+        if (pendingPull == null || !ServiceLocator.Instance.TryGet(out PlayerInventory inventory))
+            return false;
+
+        GachaPendingPull completed = pendingPull;
+        pendingPull = null;
+        bool duplicate = inventory.Grant(completed.Reward);
+        int nextPulls = completed.Reward.Rarity >= GachaRarity.Epic
+            ? 0 : completed.PreviousPullsSinceEpic + 1;
+        pullsSinceEpic[completed.Banner.BannerId] = nextPulls;
+        result = new GachaPullResult(completed.Reward, duplicate,
+            completed.PityTriggered, nextPulls);
+        OnPullCompleted?.Invoke(result);
+        return true;
+    }
 
     // Se pueden conectar directamente a botones del Inspector.
     public void PullSoft() => PullAndLog(GachaCurrency.Soft);
@@ -82,9 +119,8 @@ public sealed class GachaService : MonoBehaviour
             return;
         }
 
-        if (TryPullDefault(currency, out GachaPullResult result, out GachaPullFailure failure))
-            Debug.Log($"Gacha: {result.Reward.DisplayName} ({result.Reward.Rarity})" +
-                (result.WasDuplicate ? " - duplicado" : ""), this);
+        if (TryBeginDefaultPull(currency, out GachaPullFailure failure))
+            Debug.Log("Gacha: tirada reservada; agitá el dispositivo para abrirla.", this);
         else Debug.LogWarning($"Gacha: tirada fallida ({failure}).", this);
     }
 }

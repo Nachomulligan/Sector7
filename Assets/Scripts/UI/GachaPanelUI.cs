@@ -12,6 +12,8 @@ public sealed class GachaPanelUI : MonoBehaviour
     [SerializeField] private TMP_Text pityText;
     [SerializeField] private TMP_Text resultText;
     [SerializeField] private TMP_Text inventoryText;
+    [SerializeField] private TMP_Text shakeInstructionText;
+    [SerializeField] private AccelerometerShakeDetector shakeDetector;
 
     private GachaService gacha;
     private PlayerInventory inventory;
@@ -31,8 +33,12 @@ public sealed class GachaPanelUI : MonoBehaviour
         premiumPullButton.onClick.AddListener(PullPremium);
         equipLastRewardButton.onClick.AddListener(EquipLastReward);
         inventory.OnChanged += Refresh;
+        gacha.OnPullPending += HandlePullPending;
         gacha.OnPullCompleted += HandlePull;
+        shakeDetector.OnShakeDetected += HandleShakeDetected;
+        shakeDetector.OnStateChanged += HandleShakeStateChanged;
         Refresh();
+        RefreshShakeState();
     }
 
     private void OnDestroy()
@@ -41,7 +47,13 @@ public sealed class GachaPanelUI : MonoBehaviour
         if (premiumPullButton != null) premiumPullButton.onClick.RemoveListener(PullPremium);
         if (equipLastRewardButton != null) equipLastRewardButton.onClick.RemoveListener(EquipLastReward);
         if (inventory != null) inventory.OnChanged -= Refresh;
+        if (gacha != null) gacha.OnPullPending -= HandlePullPending;
         if (gacha != null) gacha.OnPullCompleted -= HandlePull;
+        if (shakeDetector != null)
+        {
+            shakeDetector.OnShakeDetected -= HandleShakeDetected;
+            shakeDetector.OnStateChanged -= HandleShakeStateChanged;
+        }
     }
 
     public void PullSoft() => Pull(GachaCurrency.Soft);
@@ -56,9 +68,27 @@ public sealed class GachaPanelUI : MonoBehaviour
 
     private void Pull(GachaCurrency currency)
     {
-        if (!gacha.TryPullDefault(currency, out _, out GachaPullFailure failure))
+        if (!gacha.TryBeginDefaultPull(currency, out GachaPullFailure failure))
             resultText.text = FailureMessage(failure);
     }
+
+    private void HandlePullPending(GachaPendingPull pending)
+    {
+        lastReward = null;
+        equipLastRewardButton.interactable = false;
+        resultText.color = Color.white;
+        resultText.text = "CAJA DE SUMINISTROS LISTA";
+        RefreshShakeState();
+    }
+
+    private void HandleShakeDetected()
+    {
+        if (!gacha.HasPendingPull) return;
+        if (!gacha.TryCompletePendingPull(out _))
+            resultText.text = "No se pudo abrir la caja de suministros";
+    }
+
+    private void HandleShakeStateChanged(ShakeDetectorState state) => RefreshShakeState();
 
     private void HandlePull(GachaPullResult result)
     {
@@ -69,6 +99,7 @@ public sealed class GachaPanelUI : MonoBehaviour
             (result.PityTriggered ? "  •  PITY" : string.Empty);
         equipLastRewardButton.interactable = result.Reward.IsValid;
         Refresh();
+        RefreshShakeState();
     }
 
     private void Refresh()
@@ -77,11 +108,31 @@ public sealed class GachaPanelUI : MonoBehaviour
         if (gacha.DefaultBanner != null)
             pityText.text = $"GARANTIA EPIC+  {gacha.GetPullsSinceEpic(gacha.DefaultBanner)} / {gacha.DefaultBanner.EpicPityThreshold}";
         inventoryText.text = $"Coleccion: {inventory.Owned.Count} objetos";
+        bool canPull = !gacha.HasPendingPull && shakeDetector.State == ShakeDetectorState.Ready;
+        softPullButton.interactable = canPull;
+        premiumPullButton.interactable = canPull;
+    }
+
+    private void RefreshShakeState()
+    {
+        if (shakeInstructionText == null || shakeDetector == null || gacha == null) return;
+
+        if (shakeDetector.State == ShakeDetectorState.Unavailable)
+            shakeInstructionText.text = "ACELERÓMETRO NO DISPONIBLE";
+        else if (shakeDetector.State == ShakeDetectorState.Calibrating)
+            shakeInstructionText.text = "MANTENÉ EL DISPOSITIVO QUIETO · CALIBRANDO…";
+        else if (gacha.HasPendingPull)
+            shakeInstructionText.text = "AGITÁ EL DISPOSITIVO PARA ABRIR LA CAJA";
+        else
+            shakeInstructionText.text = "LISTO PARA REALIZAR UNA TIRADA";
+
+        Refresh();
     }
 
     private bool HasViewReferences => softPullButton != null && premiumPullButton != null &&
         equipLastRewardButton != null && balanceText != null && pityText != null &&
-        resultText != null && inventoryText != null;
+        resultText != null && inventoryText != null && shakeInstructionText != null &&
+        shakeDetector != null;
 
     private static Color RarityColor(GachaRarity rarity)
     {
@@ -97,5 +148,6 @@ public sealed class GachaPanelUI : MonoBehaviour
     private static string FailureMessage(GachaPullFailure failure) =>
         failure == GachaPullFailure.InsufficientCurrency ? "Saldo insuficiente" :
         failure == GachaPullFailure.InvalidBanner ? "El banner no tiene recompensas validas" :
+        failure == GachaPullFailure.PendingPull ? "Primero abrí la caja pendiente" :
         "No se pudo realizar la tirada";
 }
