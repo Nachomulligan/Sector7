@@ -5537,6 +5537,7 @@ GameObject:
   - component: {fileID: 1437099826}
   - component: {fileID: 1437099825}
   - component: {fileID: 1437099828}
+  - component: {fileID: 1437099829}
   m_Layer: 0
   m_Name: GachaRuntime
   m_TagString: Untagged
@@ -5602,6 +5603,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a42fb8b9e25426ba10a15f421d617c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SessionServiceRoot
+--- !u!114 &1437099829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1437099824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47b63569f40a453ea6ff326f5423ebc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FrameRateManager
+  targetFrameRate: 60
 --- !u!1 &1506906672
 GameObject:
   m_ObjectHideFlags: 0
