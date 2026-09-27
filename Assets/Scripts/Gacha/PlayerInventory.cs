@@ -1,6 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [DisallowMultipleComponent]
 public sealed class PlayerInventory : MonoBehaviour
@@ -10,6 +12,7 @@ public sealed class PlayerInventory : MonoBehaviour
     [Min(0)] [SerializeField] private int initialPremiumCurrency = 100;
     [Tooltip("Recompensas que el jugador posee al iniciar una sesion nueva.")]
     [SerializeField] private List<GachaRewardSO> startingRewards = new List<GachaRewardSO>();
+    [SerializeField] private string gameplaySceneName = "Gameplay";
 
     private readonly Dictionary<GachaRewardSO, int> owned = new Dictionary<GachaRewardSO, int>();
     private readonly Dictionary<GachaRewardSO, int> levels = new Dictionary<GachaRewardSO, int>();
@@ -17,6 +20,8 @@ public sealed class PlayerInventory : MonoBehaviour
     private int premiumCurrency;
 
     public event Action OnChanged;
+    /// <summary>Se dispara cuando el loadout de la escena Gameplay ya fue resuelto.</summary>
+    public event Action<bool, string> OnLoadoutReady;
     public int SoftCurrency => softCurrency;
     public int PremiumCurrency => premiumCurrency;
     public IReadOnlyDictionary<GachaRewardSO, int> Owned => owned;
@@ -47,10 +52,15 @@ public sealed class PlayerInventory : MonoBehaviour
         }
     }
 
-    private void OnEnable() => ServiceLocator.Instance.Register(this);
+    private void OnEnable()
+    {
+        ServiceLocator.Instance.Register(this);
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
 
     private void OnDisable()
     {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
         if (ServiceLocator.HasInstance) ServiceLocator.Instance.Unregister(this);
     }
 
@@ -227,17 +237,60 @@ public sealed class PlayerInventory : MonoBehaviour
 
     private void ApplyToActivePlayer()
     {
-        if (TryGetActivePlayer(out Mecha mecha, out _))
-            ApplyEquippedLoadout(mecha);
+        TryApplyToActivePlayer(out _);
     }
 
-    private static bool TryGetActivePlayer(out Mecha mecha, out MechaAbility ability)
+    public bool TryApplyToActivePlayer(out string status)
     {
-        mecha = null;
-        ability = null;
-        if (!ServiceLocator.Instance.TryGet<IPlayerTarget>(out IPlayerTarget player) ||
-            !player.IsAlive || player.TargetTransform == null) return false;
-        return player.TargetTransform.TryGetComponent(out mecha) &&
-            player.TargetTransform.TryGetComponent(out ability);
+        if (!ServiceLocator.Instance.TryGet<IPlayerTarget>(out IPlayerTarget player))
+        {
+            status = "ERROR · IPlayerTarget no está registrado en ServiceLocator";
+            return false;
+        }
+        if (!player.IsAlive)
+        {
+            status = "ERROR · El Player está muerto o desactivado";
+            return false;
+        }
+        if (player.TargetTransform == null)
+        {
+            status = "ERROR · IPlayerTarget no tiene Transform";
+            return false;
+        }
+        if (!player.TargetTransform.TryGetComponent(out Mecha mecha))
+        {
+            status = "ERROR · El objeto registrado no tiene componente Mecha";
+            return false;
+        }
+
+        ApplyEquippedLoadout(mecha);
+        status = $"OK · Mecha: {AssetName(EquippedMecha)} · Arma: {AssetName(EquippedWeapon)} · " +
+            $"Habilidad: {AssetName(EquippedAbility)} · Apoyo: {AssetName(EquippedCompanion)}";
+        return true;
+    }
+
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == gameplaySceneName)
+            StartCoroutine(ApplyLoadoutAfterSceneInitialization());
+    }
+
+    private IEnumerator ApplyLoadoutAfterSceneInitialization()
+    {
+        yield return null;
+        bool applied = TryApplyToActivePlayer(out string status);
+        OnLoadoutReady?.Invoke(applied, status);
+        if (applied)
+            Debug.Log($"[PlayerInventory] {status}", this);
+        else
+            Debug.LogError($"[PlayerInventory] No se pudo aplicar el loadout al cargar Gameplay: {status}", this);
+    }
+
+    private static string AssetName(UnityEngine.Object asset)
+    {
+        if (asset == null) return "Ninguno";
+        if (asset is MechaPresetSO mecha) return mecha.DisplayName;
+        if (asset is CompanionPresetSO companion) return companion.DisplayName;
+        return asset.name.Replace("Weapon_", string.Empty).Replace("Ability_", string.Empty);
     }
 }

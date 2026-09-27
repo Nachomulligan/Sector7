@@ -65,10 +65,11 @@ public class EnemySpawner : MonoBehaviour
     private readonly HashSet<EnemyMecha> activeEnemies = new HashSet<EnemyMecha>();
     private readonly HashSet<EnemyMecha> currentWaveEnemies = new HashSet<EnemyMecha>();
     private Coroutine spawnRoutine;
+    private bool startupBlocked;
 
     private void Start()
     {
-        if (playOnStart)
+        if (playOnStart && !startupBlocked)
         {
             StartSpawning();
         }
@@ -85,6 +86,13 @@ public class EnemySpawner : MonoBehaviour
         spawnRoutine = StartCoroutine(mode == EnemySpawnerMode.WaveSequence
             ? RunWaveSequence()
             : RunEndlessRandom());
+    }
+
+    /// <summary>Permite que el coordinador de Gameplay retenga el auto inicio hasta completar su carga.</summary>
+    public void SetStartupBlocked(bool blocked)
+    {
+        startupBlocked = blocked;
+        if (blocked) StopSpawning();
     }
 
     public void StopSpawning()
