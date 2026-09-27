@@ -10,6 +10,7 @@ using UnityEngine;
 ///   3) Expone eventos (OnWaveChanged, OnGameOver, OnPauseChanged) para que la UI
 ///      se entere sin necesidad de que GameManager conozca a UIManagerGameplay.
 /// </summary>
+[RequireComponent(typeof(RunRewardService))]
 public class GameManager : MonoBehaviour
 {
     [Header("Spawner")]
@@ -37,6 +38,12 @@ public class GameManager : MonoBehaviour
     public event Action<bool> OnPauseChanged;
 
     private Coroutine roundGapRoutine;
+    private RunRewardService runRewardService;
+
+    private void Awake()
+    {
+        runRewardService = GetComponent<RunRewardService>();
+    }
 
     private void OnEnable()
     {
@@ -137,37 +144,10 @@ public class GameManager : MonoBehaviour
             enemySpawner.StopSpawning();
         }
 
+        Time.timeScale = 0f;
         GameEvents.RaisePlayerDied();
+        runRewardService.SettleRun();
         OnGameOver?.Invoke();
-    }
-
-    /// <summary>
-    /// Llamado desde el botón "Revive" del panel de Game Over. Reactiva al player,
-    /// le devuelve la vida completa y vuelve a arrancar las oleadas desde cero.
-    /// </summary>
-    public void Revive()
-    {
-        if (!IsGameOver)
-        {
-            return;
-        }
-
-        IsGameOver = false;
-        IsPaused = false;
-        Time.timeScale = 1f;
-
-        if (playerHealth != null)
-        {
-            // Mecha.HandleDeath desactiva el GameObject entero al morir, así que hay
-            // que reactivarlo antes de poder resetear su vida.
-            playerHealth.gameObject.SetActive(true);
-            playerHealth.ResetHealth();
-        }
-
-        if (enemySpawner != null)
-        {
-            enemySpawner.StartSpawning();
-        }
     }
 
     // =====================================================

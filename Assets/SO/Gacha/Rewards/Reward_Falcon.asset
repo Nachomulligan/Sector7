@@ -13,8 +13,12 @@ MonoBehaviour:
   m_Name: Reward_Falcon
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
   displayName: Falcon
+  icon: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   rarity: 2
   kind: 0
   mecha: {fileID: 11400000, guid: 4119612f12874213898078009906e32a, type: 2}
   weapon: {fileID: 0}
   ability: {fileID: 0}
+  companion: {fileID: 0}
+  maxLevel: 10
+  bonusPerLevelPercent: 0.05

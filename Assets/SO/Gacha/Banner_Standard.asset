@@ -44,3 +44,13 @@ MonoBehaviour:
     weight: 1
   - reward: {fileID: 11400000, guid: afbf77ecbecc04a46840e93c10dca7c2, type: 2}
     weight: 1
+  - reward: {fileID: 11400000, guid: 10bb100dc700962418bf89cb30ac0849, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 21eea48a261bdcb4696eedcb55b7e82f, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: b6ea91c9c688db2479938a934b2ad9aa, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: d07a2ad3cb1e9364fac60df6256c6a64, type: 2}
+    weight: 1
+  - reward: {fileID: 11400000, guid: 00687ab2fd7b01f45b554f1a9cdd337f, type: 2}
+    weight: 1

@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
 
 public class UIManagerGameplay : MonoBehaviour
 {
@@ -25,7 +26,9 @@ public class UIManagerGameplay : MonoBehaviour
 
     [Header("Game Over")]
     [SerializeField] private GameObject gameOverPanel;
-    [SerializeField] private Button reviveButton;
+    [FormerlySerializedAs("reviveButton")]
+    [SerializeField] private Button restartButton;
+    [SerializeField] private TMP_Text runRewardText;
     [SerializeField] private Button mainMenuButton;
 
     [Header("Pause")]
@@ -36,6 +39,7 @@ public class UIManagerGameplay : MonoBehaviour
 
     private ScoreManager scoreManager;
     private GameManager gameManager;
+    private RunRewardService runRewardService;
     private bool hasStarted;
 
     private void Start()
@@ -93,9 +97,9 @@ public class UIManagerGameplay : MonoBehaviour
             gameOverPanel.SetActive(false);
         }
 
-        if (reviveButton != null)
+        if (restartButton != null)
         {
-            reviveButton.onClick.AddListener(HandleReviveButtonPressed);
+            restartButton.onClick.AddListener(HandleRestartButtonPressed);
         }
 
         if (mainMenuButton != null)
@@ -139,9 +143,9 @@ public class UIManagerGameplay : MonoBehaviour
 
         UnbindGameplayServices();
 
-        if (reviveButton != null)
+        if (restartButton != null)
         {
-            reviveButton.onClick.RemoveListener(HandleReviveButtonPressed);
+            restartButton.onClick.RemoveListener(HandleRestartButtonPressed);
         }
 
         if (mainMenuButton != null)
@@ -176,23 +180,19 @@ public class UIManagerGameplay : MonoBehaviour
 
     private void HandleGameOver()
     {
+        if (runRewardText != null && runRewardService != null)
+            runRewardText.text = $"Score: {runRewardService.FinalScore}\nCréditos obtenidos: {runRewardService.GrantedCredits}";
+
         if (gameOverPanel != null)
         {
             gameOverPanel.SetActive(true);
         }
     }
 
-    private void HandleReviveButtonPressed()
+    private void HandleRestartButtonPressed()
     {
-        if (gameManager != null)
-        {
-            gameManager.Revive();
-        }
-
-        if (gameOverPanel != null)
-        {
-            gameOverPanel.SetActive(false);
-        }
+        Time.timeScale = 1f;
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void HandleMainMenuButtonPressed()
@@ -278,6 +278,9 @@ public class UIManagerGameplay : MonoBehaviour
             if (gameManager.CurrentWaveNumber > 0)
                 HandleWaveChanged(gameManager.CurrentWaveNumber);
         }
+
+
+        ServiceLocator.Instance.TryGet(out runRewardService);
     }
 
     private void UnbindGameplayServices()
@@ -294,5 +297,6 @@ public class UIManagerGameplay : MonoBehaviour
 
         scoreManager = null;
         gameManager = null;
+        runRewardService = null;
     }
 }

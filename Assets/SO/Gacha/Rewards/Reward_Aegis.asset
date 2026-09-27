@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
-  m_Name: Reward_Nova
+  m_Name: Reward_Aegis
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
-  displayName: Nova
-  icon: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
-  rarity: 3
-  kind: 0
-  mecha: {fileID: 11400000, guid: 96107a0213a3410fa6239257ef186cab, type: 2}
+  displayName: Aegis
+  icon: {fileID: 10913, guid: 0000000000000000f000000000000000, type: 0}
+  rarity: 2
+  kind: 3
+  mecha: {fileID: 0}
   weapon: {fileID: 0}
   ability: {fileID: 0}
-  companion: {fileID: 0}
+  companion: {fileID: 11400000, guid: 6009fd33f822c5f41a6c2f670bf57faa, type: 2}
   maxLevel: 10
   bonusPerLevelPercent: 0.05
