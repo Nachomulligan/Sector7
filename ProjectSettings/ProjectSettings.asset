@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: DefaultCompany
+  companyName: SectorGames
   productName: Sector7
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
@@ -171,7 +171,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.4
   androidMinAspectRatio: 1
   applicationIdentifier:
-    Android: com.DefaultCompany.urp_2d
+    Android: com.SectorGames.Sector7
     Standalone: com.DefaultCompany.2D-URP
   buildNumber:
     Standalone: 0
