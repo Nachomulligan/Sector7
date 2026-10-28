@@ -5,16 +5,22 @@ MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
-  m_GameObject: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
   m_Name: Reward_LaserBeam
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
   displayName: Laser Beam
+  description: "Sistema de disparo Laser Beam. Su nivel mejora la cadencia sin modificar
+    el da\xF1o base del mecha."
+  icon: {fileID: 21300000, guid: 20f19096b01d2fb4789178107e6f8a87, type: 3}
   rarity: 3
   kind: 1
   mecha: {fileID: 0}
   weapon: {fileID: 11400000, guid: 606f644aad103494c904a092a21e6db4, type: 2}
   ability: {fileID: 0}
+  companion: {fileID: 0}
+  maxLevel: 10
+  bonusPerLevelPercent: 0.05

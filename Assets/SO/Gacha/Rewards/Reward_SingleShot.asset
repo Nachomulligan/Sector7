@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: Reward_SingleShot
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
   displayName: Single Shot
+  description: "Sistema de disparo Single Shot. Su nivel mejora la cadencia sin modificar
+    el da\xF1o base del mecha."
+  icon: {fileID: 21300000, guid: 475311db89f512e4d90fe3f6a9a7bdbd, type: 3}
   rarity: 0
   kind: 1
   mecha: {fileID: 0}
   weapon: {fileID: 11400000, guid: e2df7247b9542574cb5b122a641b8416, type: 2}
   ability: {fileID: 0}
+  companion: {fileID: 0}
+  maxLevel: 10
+  bonusPerLevelPercent: 0.05

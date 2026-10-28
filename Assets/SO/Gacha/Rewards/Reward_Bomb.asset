@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: Reward_Bomb
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
   displayName: Bomb
+  description: Habilidad especial Bomb. Al mejorarla se reduce el tiempo necesario
+    para volver a utilizarla.
+  icon: {fileID: 21300000, guid: 57fc688981671384da48023bfac1d475, type: 3}
   rarity: 2
   kind: 2
   mecha: {fileID: 0}
   weapon: {fileID: 0}
   ability: {fileID: 11400000, guid: 0ba7488254374c24380d284d1ec75a94, type: 2}
+  companion: {fileID: 0}
+  maxLevel: 10
+  bonusPerLevelPercent: 0.05

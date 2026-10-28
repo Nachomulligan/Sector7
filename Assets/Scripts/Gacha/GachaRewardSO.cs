@@ -7,6 +7,7 @@ public enum GachaRewardKind { Mecha, Weapon, Ability, Companion }
 public sealed class GachaRewardSO : ScriptableObject
 {
     [SerializeField] private string displayName;
+    [TextArea(2, 5)] [SerializeField] private string description;
     [SerializeField] private Sprite icon;
     [SerializeField] private GachaRarity rarity;
     [SerializeField] private GachaRewardKind kind;
@@ -19,6 +20,8 @@ public sealed class GachaRewardSO : ScriptableObject
     [Min(0f)] [SerializeField] private float bonusPerLevelPercent = 0.05f;
 
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
+    public string Description => string.IsNullOrWhiteSpace(description)
+        ? "Objeto coleccionable de Sector 7." : description;
     public Sprite Icon => icon;
     public GachaRarity Rarity => rarity;
     public GachaRewardKind Kind => kind;

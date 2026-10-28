@@ -8,6 +8,7 @@ public abstract class WeaponStrategySO : ScriptableObject, IWeaponStrategy
     [SerializeField] protected float projectileSpeed = 12f;
 
     public float Cooldown => cooldown;
+    public float ProjectileSpeed => projectileSpeed;
 
     public virtual string GetStatsDescription(float levelMultiplier)
     {

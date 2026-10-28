@@ -30,17 +30,33 @@ public sealed class StatModifierStrategySO : ScriptableObject
 
     public string GetStatsDescription(float levelMultiplier)
     {
+        return GetStatsDescription(levelMultiplier, -1f);
+    }
+
+    public string GetStatsDescription(float levelMultiplier, float previousLevelMultiplier)
+    {
         if (modifiers.Count == 0) return "Sin modificadores";
         StringBuilder builder = new StringBuilder();
         foreach (Entry modifier in modifiers)
         {
             if (builder.Length > 0) builder.AppendLine();
             float scaledValue = modifier.value * levelMultiplier;
+            float previousValue = modifier.value * previousLevelMultiplier;
+            bool showDelta = previousLevelMultiplier >= 0f &&
+                !Mathf.Approximately(scaledValue, previousValue);
             string statName = StatName(modifier.stat);
             if (modifier.operation == StatModifierOperation.Percent)
+            {
                 builder.Append($"{statName}: {scaledValue * 100f:+0.#;-0.#;0}%");
+                if (showDelta)
+                    builder.Append($"  <color=#65F28A>({(scaledValue - previousValue) * 100f:+0.#;-0.#;0}%)</color>");
+            }
             else
+            {
                 builder.Append($"{statName}: {scaledValue:+0.##;-0.##;0}");
+                if (showDelta)
+                    builder.Append($"  <color=#65F28A>({scaledValue - previousValue:+0.##;-0.##;0})</color>");
+            }
         }
         return builder.ToString();
     }

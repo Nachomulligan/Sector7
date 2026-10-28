@@ -27,13 +27,19 @@ public sealed class GachaPullResult
     public bool WasDuplicate { get; }
     public bool PityTriggered { get; }
     public int PullsSinceEpic { get; }
+    public int PreviousLevel { get; }
+    public int CurrentLevel { get; }
+    public bool LevelIncreased => CurrentLevel > PreviousLevel;
 
-    public GachaPullResult(GachaRewardSO reward, bool wasDuplicate, bool pityTriggered, int pullsSinceEpic)
+    public GachaPullResult(GachaRewardSO reward, bool wasDuplicate, bool pityTriggered,
+        int pullsSinceEpic, int previousLevel, int currentLevel)
     {
         Reward = reward;
         WasDuplicate = wasDuplicate;
         PityTriggered = pityTriggered;
         PullsSinceEpic = pullsSinceEpic;
+        PreviousLevel = previousLevel;
+        CurrentLevel = currentLevel;
     }
 }
 
@@ -94,12 +100,14 @@ public sealed class GachaService : MonoBehaviour
 
         GachaPendingPull completed = pendingPull;
         pendingPull = null;
+        int previousLevel = inventory.Level(completed.Reward);
         bool duplicate = inventory.Grant(completed.Reward);
+        int currentLevel = inventory.Level(completed.Reward);
         int nextPulls = completed.Reward.Rarity >= GachaRarity.Epic
             ? 0 : completed.PreviousPullsSinceEpic + 1;
         pullsSinceEpic[completed.Banner.BannerId] = nextPulls;
         result = new GachaPullResult(completed.Reward, duplicate,
-            completed.PityTriggered, nextPulls);
+            completed.PityTriggered, nextPulls, previousLevel, currentLevel);
         OnPullCompleted?.Invoke(result);
         return true;
     }
