@@ -15,8 +15,8 @@ MonoBehaviour:
   displayName: Nova
   description: "Chasis Nova con estad\xEDsticas propias de vida y da\xF1o. El arma
     y la habilidad se equipan por separado."
-  icon: {fileID: 21300000, guid: d4e7a833576ec0a43ae80ae59c366415, type: 3}
-  iconColor: {r: 1, g: 1, b: 1, a: 1}
+  icon: {fileID: 5316505333109804376, guid: 601f6d7e05bb80c48a0a45f65a625851, type: 3}
+  iconColor: {r: 1, g: 0.34901962, b: 0.6509804, a: 1}
   appearance: {fileID: 0}
   appearanceColor: {r: 1, g: 0.35, b: 0.65, a: 1}
   baseMaxHealth: 90

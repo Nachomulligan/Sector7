@@ -15,8 +15,8 @@ MonoBehaviour:
   displayName: Spread Shot
   description: "Sistema de disparo Spread Shot. Su nivel mejora la cadencia sin modificar
     el da\xF1o base del mecha."
-  icon: {fileID: 21300000, guid: bf93a41996b037b49b240cff36b80707, type: 3}
-  iconColor: {r: 1, g: 1, b: 1, a: 1}
+  icon: {fileID: 2977839672645786193, guid: f0ae33cc59eebb34bb0f51a4fda7413e, type: 3}
+  iconColor: {r: 0, g: 1, b: 0.721333, a: 1}
   cooldown: 0.25
   projectilePrefab: {fileID: 8354668755857535768, guid: b70cde5623a7cb14bbe9a70631794ada, type: 3}
   projectileSpeed: 12

@@ -15,7 +15,7 @@ MonoBehaviour:
   displayName: Bomb
   description: Habilidad especial Bomb. Al mejorarla se reduce el tiempo necesario
     para volver a utilizarla.
-  icon: {fileID: 21300000, guid: 57fc688981671384da48023bfac1d475, type: 3}
+  icon: {fileID: -1643389817789898457, guid: 5bbc3351b6e0aa248bf33a64f930744a, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 8
   damage: 999
