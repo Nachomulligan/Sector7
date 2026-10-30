@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Companion_Scout
   m_EditorClassIdentifier: Assembly-CSharp::CompanionPresetSO
   displayName: Scout
+  description: Unidad de apoyo Scout. Sigue al mecha y aplica modificadores pasivos
+    durante la partida.
+  icon: {fileID: 21300000, guid: 0c54f51d866de564980e308ff4abe00b, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   visualPrefab: {fileID: 5352854826207038817, guid: 6d6b592eabe0457448d72a7f13c8f64d, type: 3}
   appearance: {fileID: -3708664010354139772, guid: 601f6d7e05bb80c48a0a45f65a625851, type: 3}
   appearanceColor: {r: 0.25, g: 0.9, b: 1, a: 1}

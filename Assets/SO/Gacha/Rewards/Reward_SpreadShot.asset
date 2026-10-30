@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
   m_Name: Reward_SpreadShot
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
-  displayName: Spread Shot
-  description: "Sistema de disparo Spread Shot. Su nivel mejora la cadencia sin modificar
-    el da\xF1o base del mecha."
-  icon: {fileID: 21300000, guid: bf93a41996b037b49b240cff36b80707, type: 3}
   rarity: 1
   kind: 1
   mecha: {fileID: 0}

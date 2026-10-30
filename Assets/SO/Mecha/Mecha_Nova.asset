@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Mecha_Nova
   m_EditorClassIdentifier: Assembly-CSharp::MechaPresetSO
   displayName: Nova
+  description: "Chasis Nova con estad\xEDsticas propias de vida y da\xF1o. El arma
+    y la habilidad se equipan por separado."
+  icon: {fileID: 21300000, guid: d4e7a833576ec0a43ae80ae59c366415, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   appearance: {fileID: 0}
   appearanceColor: {r: 1, g: 0.35, b: 0.65, a: 1}
   baseMaxHealth: 90

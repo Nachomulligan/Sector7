@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
   m_Name: Reward_LaserBeam
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
-  displayName: Laser Beam
-  description: "Sistema de disparo Laser Beam. Su nivel mejora la cadencia sin modificar
-    el da\xF1o base del mecha."
-  icon: {fileID: 21300000, guid: 20f19096b01d2fb4789178107e6f8a87, type: 3}
   rarity: 3
   kind: 1
   mecha: {fileID: 0}

@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1a4c63f671a4c43af7400d2c00a6d8b, type: 3}
   m_Name: Ability_Heal
   m_EditorClassIdentifier: Assembly-CSharp::HealStrategy
+  displayName: Repair Pulse
+  description: Habilidad especial Repair Pulse. Al mejorarla se reduce el tiempo
+    necesario para volver a utilizarla.
+  icon: {fileID: 21300000, guid: e5910df4629ea164088216f7ab13141e, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 12
-  icon: {fileID: 2489258271204663530, guid: d8e03800077f33a48a8447fac85ee950, type: 3}
   healAmount: 35

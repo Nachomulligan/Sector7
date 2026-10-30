@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
   m_Name: Reward_HomingMissile
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
-  displayName: Homing Missile
-  description: "Sistema de disparo Homing Missile. Su nivel mejora la cadencia sin
-    modificar el da\xF1o base del mecha."
-  icon: {fileID: 21300000, guid: 139d74170693e334e8663a7e723aa64a, type: 3}
   rarity: 2
   kind: 1
   mecha: {fileID: 0}

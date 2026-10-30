@@ -218,6 +218,7 @@ public class UIManagerGameplay : MonoBehaviour
         if (abilityIconImage != null)
         {
             abilityIconImage.sprite = newAbility != null ? newAbility.Icon : null;
+            abilityIconImage.color = newAbility != null ? newAbility.IconColor : Color.white;
             abilityIconImage.enabled = newAbility != null && newAbility.Icon != null;
         }
     }

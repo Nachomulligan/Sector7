@@ -12,7 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83382a610db8af04f8b9245a5d16c740, type: 3}
   m_Name: WeaponEnemy_SingleShot
   m_EditorClassIdentifier: Assembly-CSharp::SingleShotStrategy
+  displayName: 
+  description: 
+  icon: {fileID: 0}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 1
-  projectilePrefab: {fileID: 8354668755857535768, guid: b70cde5623a7cb14bbe9a70631794ada, type: 3}
-  damage: 10
+  projectilePrefab: {fileID: 8354668755857535768, guid: 618616b2b33e1ee4bac6cd757017b77b, type: 3}
   projectileSpeed: 12

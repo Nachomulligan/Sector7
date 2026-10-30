@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Mecha_Rookie
   m_EditorClassIdentifier: Assembly-CSharp::MechaPresetSO
   displayName: Rookie
+  description: "Chasis Rookie con estad\xEDsticas propias de vida y da\xF1o. El arma
+    y la habilidad se equipan por separado."
+  icon: {fileID: 21300000, guid: def51e5bf379e3c4eabee575b61f2c9f, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   appearance: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
   appearanceColor: {r: 0.72, g: 0.78, b: 0.82, a: 1}
   baseMaxHealth: 100

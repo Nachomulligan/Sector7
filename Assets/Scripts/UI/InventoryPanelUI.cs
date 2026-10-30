@@ -14,7 +14,6 @@ public sealed class InventoryPanelUI : MonoBehaviour
     [SerializeField] private ItemDetailsPanelUI detailsPanel;
     [SerializeField] private TMP_Text emptyText;
     [SerializeField] private TMP_Text selectionText;
-    [SerializeField] private Button equipButton;
 
     [Header("Categorías")]
     [SerializeField] private Button mechaTab;
@@ -41,7 +40,6 @@ public sealed class InventoryPanelUI : MonoBehaviour
         weaponTab.onClick.AddListener(ShowWeapons);
         abilityTab.onClick.AddListener(ShowAbilities);
         companionTab.onClick.AddListener(ShowCompanions);
-        equipButton.onClick.AddListener(EquipSelected);
         inventory.OnChanged += Refresh;
         Refresh();
     }
@@ -53,7 +51,6 @@ public sealed class InventoryPanelUI : MonoBehaviour
         if (weaponTab != null) weaponTab.onClick.RemoveListener(ShowWeapons);
         if (abilityTab != null) abilityTab.onClick.RemoveListener(ShowAbilities);
         if (companionTab != null) companionTab.onClick.RemoveListener(ShowCompanions);
-        if (equipButton != null) equipButton.onClick.RemoveListener(EquipSelected);
     }
 
     public void ShowMechas() => SelectKind(GachaRewardKind.Mecha);
@@ -101,7 +98,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
         int level = inventory.Level(reward);
         card.name = $"Equipped_{reward.name}";
         card.Bind(reward, level, rarityVisuals, true,
-            () => detailsPanel.Show(reward, level), false);
+            () => EquipReward(reward), false, () => ShowDetails(reward));
     }
 
     private void RefreshItems()
@@ -117,32 +114,45 @@ public sealed class InventoryPanelUI : MonoBehaviour
             ItemCardUI card = Instantiate(itemCardPrefab, itemContent);
             card.name = $"Item_{reward.name}";
             card.Bind(reward, level, rarityVisuals, IsEquipped(reward),
-                () => SelectReward(reward));
+                () => EquipReward(reward), true, () => ShowDetails(reward));
             generatedItems.Add(card.gameObject);
         }
         emptyText.gameObject.SetActive(count == 0);
     }
 
-    private void SelectReward(GachaRewardSO reward)
+    private void ShowDetails(GachaRewardSO reward)
     {
         selectedReward = reward;
         int level = Mathf.Max(1, inventory.Level(reward));
-        detailsPanel.Show(reward, level);
+        detailsPanel.Show(reward, level, -1,
+            () => EquipRewardFromDetails(reward), IsEquipped(reward));
         RefreshSelection();
     }
 
-    private void EquipSelected()
+    private bool EquipReward(GachaRewardSO reward)
     {
-        if (selectedReward == null) return;
-        bool equipped = inventory.TryEquipReward(selectedReward);
+        if (reward == null) return false;
+        selectedReward = reward;
+        if (IsEquipped(reward))
+        {
+            selectionText.text = $"{reward.DisplayName.ToUpperInvariant()} YA ESTÁ EQUIPADO";
+            return true;
+        }
+
+        bool equipped = inventory.TryEquipReward(reward);
         selectionText.text = equipped
-            ? $"{selectedReward.DisplayName.ToUpperInvariant()} EQUIPADO"
+            ? $"{reward.DisplayName.ToUpperInvariant()} EQUIPADO"
             : "NO SE PUDO EQUIPAR";
+        return equipped;
+    }
+
+    private void EquipRewardFromDetails(GachaRewardSO reward)
+    {
+        if (EquipReward(reward)) detailsPanel.SetEquippedState(true);
     }
 
     private void RefreshSelection()
     {
-        equipButton.interactable = selectedReward != null && !IsEquipped(selectedReward);
         selectionText.text = selectedReward == null
             ? $"SELECCIONÁ UN {RewardPresentationUtility.KindName(currentKind)}"
             : $"{selectedReward.DisplayName.ToUpperInvariant()} · NV. {inventory.Level(selectedReward)}";
@@ -178,6 +188,6 @@ public sealed class InventoryPanelUI : MonoBehaviour
 
     private bool HasReferences => equippedContent != null && itemContent != null &&
         itemCardPrefab != null && detailsPanel != null && emptyText != null && selectionText != null &&
-        equipButton != null && mechaTab != null && weaponTab != null && abilityTab != null &&
+        mechaTab != null && weaponTab != null && abilityTab != null &&
         companionTab != null;
 }

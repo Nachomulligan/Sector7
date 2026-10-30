@@ -13,6 +13,10 @@ MonoBehaviour:
   m_Name: Mecha_Falcon
   m_EditorClassIdentifier: Assembly-CSharp::MechaPresetSO
   displayName: Falcon
+  description: "Chasis Falcon con estad\xEDsticas propias de vida y da\xF1o. El arma
+    y la habilidad se equipan por separado."
+  icon: {fileID: 21300000, guid: ccf729ec6818ce1489b9e45b0691902c, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   appearance: {fileID: 0}
   appearanceColor: {r: 0.25, g: 0.85, b: 1, a: 1}
   baseMaxHealth: 120

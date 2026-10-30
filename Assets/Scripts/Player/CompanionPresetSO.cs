@@ -1,10 +1,15 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Sector7/Companions/Companion Preset", fileName = "Companion_")]
-public sealed class CompanionPresetSO : ScriptableObject
+public sealed class CompanionPresetSO : ScriptableObject, IItemPresentationSource
 {
-    [Header("Identidad visual")]
+    [Header("Presentación en UI")]
     [SerializeField] private string displayName;
+    [TextArea(2, 5)] [SerializeField] private string description;
+    [SerializeField] private Sprite icon;
+    [SerializeField] private Color iconColor = Color.white;
+
+    [Header("Identidad visual en Gameplay")]
     [SerializeField] private CompanionFollower visualPrefab;
     [Tooltip("Sprite aplicado al prefab visual cuando este companion está equipado.")]
     [SerializeField] private Sprite appearance;
@@ -26,6 +31,10 @@ public sealed class CompanionPresetSO : ScriptableObject
     [SerializeField] private StatModifierStrategySO modifier;
 
     public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
+    public string Description => string.IsNullOrWhiteSpace(description)
+        ? "Unidad de apoyo con bonificaciones pasivas." : description;
+    public Sprite Icon => icon != null ? icon : appearance;
+    public Color IconColor => icon != null ? iconColor : appearanceColor;
     public CompanionFollower VisualPrefab => visualPrefab;
     public Sprite Appearance => appearance;
     public Color AppearanceColor => appearanceColor;

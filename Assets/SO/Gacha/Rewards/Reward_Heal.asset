@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
   m_Name: Reward_Heal
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
-  displayName: Repair Pulse
-  description: Habilidad especial Repair Pulse. Al mejorarla se reduce el tiempo
-    necesario para volver a utilizarla.
-  icon: {fileID: 21300000, guid: e5910df4629ea164088216f7ab13141e, type: 3}
   rarity: 1
   kind: 2
   mecha: {fileID: 0}

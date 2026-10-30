@@ -1,10 +1,12 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 [DisallowMultipleComponent]
-public sealed class ItemCardUI : MonoBehaviour
+public sealed class ItemCardUI : MonoBehaviour, IPointerDownHandler, IPointerUpHandler,
+    IPointerMoveHandler, IPointerExitHandler
 {
     [SerializeField] private Button button;
     [SerializeField] private Image background;
@@ -15,25 +17,36 @@ public sealed class ItemCardUI : MonoBehaviour
     [SerializeField] private TMP_Text rarityText;
     [SerializeField] private GameObject equippedBadge;
     [SerializeField] private Sprite fallbackIcon;
+    [Header("Interacción táctil")]
+    [Min(0.1f)] [SerializeField] private float longPressDuration = 0.45f;
+    [Min(1f)] [SerializeField] private float movementCancelDistance = 18f;
 
-    private Action clickAction;
+    private Action tapAction;
+    private Action longPressAction;
+    private bool trackingPress;
+    private bool longPressTriggered;
+    private int trackedPointerId;
+    private float pressStartTime;
+    private Vector2 pressStartPosition;
     public GachaRewardSO Reward { get; private set; }
 
-    private void Awake()
+    private void Update()
     {
-        if (button != null) button.onClick.AddListener(HandleClick);
+        if (!trackingPress || longPressTriggered || longPressAction == null) return;
+        if (Time.unscaledTime - pressStartTime < longPressDuration) return;
+        longPressTriggered = true;
+        longPressAction.Invoke();
     }
 
-    private void OnDestroy()
-    {
-        if (button != null) button.onClick.RemoveListener(HandleClick);
-    }
+    private void OnDisable() => CancelPress();
 
     public void Bind(GachaRewardSO reward, int level, RarityVisualConfigSO visuals,
-        bool isEquipped, Action onClick, bool showName = true)
+        bool isEquipped, Action onTap, bool showName = true, Action onLongPress = null)
     {
         Reward = reward;
-        clickAction = onClick;
+        tapAction = onTap;
+        longPressAction = onLongPress;
+        CancelPress();
         if (reward == null)
         {
             Clear();
@@ -46,7 +59,7 @@ public sealed class ItemCardUI : MonoBehaviour
         if (icon != null)
         {
             icon.sprite = reward.Icon != null ? reward.Icon : fallbackIcon;
-            icon.color = icon.sprite != null ? Color.white : new Color(1f, 1f, 1f, 0f);
+            icon.color = icon.sprite != null ? reward.IconColor : new Color(1f, 1f, 1f, 0f);
             icon.preserveAspect = true;
         }
         if (nameText != null)
@@ -67,7 +80,9 @@ public sealed class ItemCardUI : MonoBehaviour
     public void Clear()
     {
         Reward = null;
-        clickAction = null;
+        tapAction = null;
+        longPressAction = null;
+        CancelPress();
         if (icon != null) { icon.sprite = fallbackIcon; icon.color = new Color(1f, 1f, 1f, 0.18f); }
         if (nameText != null) nameText.text = "VACÍO";
         if (levelText != null) levelText.text = string.Empty;
@@ -76,7 +91,43 @@ public sealed class ItemCardUI : MonoBehaviour
         if (button != null) button.interactable = false;
     }
 
-    private void HandleClick() => clickAction?.Invoke();
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (Reward == null || button == null || !button.interactable) return;
+        trackingPress = true;
+        longPressTriggered = false;
+        trackedPointerId = eventData.pointerId;
+        pressStartTime = Time.unscaledTime;
+        pressStartPosition = eventData.position;
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (!trackingPress || eventData.pointerId != trackedPointerId) return;
+        bool shouldTap = !longPressTriggered;
+        CancelPress();
+        if (shouldTap) tapAction?.Invoke();
+    }
+
+    public void OnPointerMove(PointerEventData eventData)
+    {
+        if (!trackingPress || eventData.pointerId != trackedPointerId) return;
+        if ((eventData.position - pressStartPosition).sqrMagnitude >
+            movementCancelDistance * movementCancelDistance)
+            CancelPress();
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        if (trackingPress && eventData.pointerId == trackedPointerId) CancelPress();
+    }
+
+    private void CancelPress()
+    {
+        trackingPress = false;
+        longPressTriggered = false;
+        trackedPointerId = int.MinValue;
+    }
 
     private static RarityVisualStyle DefaultStyle(GachaRarity rarity)
     {

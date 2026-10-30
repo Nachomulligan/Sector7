@@ -959,6 +959,8 @@ MonoBehaviour:
   rarityText: {fileID: 2982356442833233715}
   equippedBadge: {fileID: 5448003215466542670}
   fallbackIcon: {fileID: 0}
+  longPressDuration: 0.45
+  movementCancelDistance: 18
 --- !u!1 &8910034528908321941
 GameObject:
   m_ObjectHideFlags: 0

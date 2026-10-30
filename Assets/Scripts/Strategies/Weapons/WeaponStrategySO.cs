@@ -1,7 +1,13 @@
 using UnityEngine;
 
-public abstract class WeaponStrategySO : ScriptableObject, IWeaponStrategy
+public abstract class WeaponStrategySO : ScriptableObject, IWeaponStrategy, IItemPresentationSource
 {
+    [Header("Presentación en UI")]
+    [SerializeField] private string displayName;
+    [TextArea(2, 5)] [SerializeField] private string description;
+    [SerializeField] private Sprite icon;
+    [SerializeField] private Color iconColor = Color.white;
+
     [Header("Stats base (compartidos por toda estrategia)")]
     [SerializeField] protected float cooldown = 0.25f;
     [SerializeField] protected GameObject projectilePrefab;
@@ -9,6 +15,12 @@ public abstract class WeaponStrategySO : ScriptableObject, IWeaponStrategy
 
     public float Cooldown => cooldown;
     public float ProjectileSpeed => projectileSpeed;
+    public string DisplayName => string.IsNullOrWhiteSpace(displayName)
+        ? name.Replace("Weapon_", string.Empty) : displayName;
+    public string Description => string.IsNullOrWhiteSpace(description)
+        ? "Sistema de disparo configurable." : description;
+    public Sprite Icon => icon;
+    public Color IconColor => iconColor;
 
     public virtual string GetStatsDescription(float levelMultiplier)
     {

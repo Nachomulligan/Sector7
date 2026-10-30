@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
   m_Name: Reward_Aegis
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
-  displayName: Aegis
-  description: Unidad de apoyo Aegis. Sigue al mecha y aplica modificadores pasivos
-    durante la partida.
-  icon: {fileID: 21300000, guid: abd5ad966884aa64f8e02f8f17516776, type: 3}
   rarity: 2
   kind: 3
   mecha: {fileID: 0}

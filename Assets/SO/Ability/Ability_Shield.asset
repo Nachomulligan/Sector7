@@ -12,6 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28d44329eb3fe946bfece07b8828afc, type: 3}
   m_Name: Ability_Shield
   m_EditorClassIdentifier: Assembly-CSharp::ShieldStrategy
+  displayName: Shield
+  description: Habilidad especial Shield. Al mejorarla se reduce el tiempo necesario
+    para volver a utilizarla.
+  icon: {fileID: 21300000, guid: ae2fbfebd1b66c9418eb8e79a99c5ad1, type: 3}
+  iconColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 10
-  icon: {fileID: 7211491898151854808, guid: 5bbc3351b6e0aa248bf33a64f930744a, type: 3}
   duration: 3

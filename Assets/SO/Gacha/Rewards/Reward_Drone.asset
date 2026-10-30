@@ -12,10 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74a92379481941a699c95c0f9a95de01, type: 3}
   m_Name: Reward_Drone
   m_EditorClassIdentifier: Assembly-CSharp::GachaRewardSO
-  displayName: Drone
-  description: Unidad de apoyo Drone. Sigue al mecha y aplica modificadores pasivos
-    durante la partida.
-  icon: {fileID: 21300000, guid: c8fb890d8108df34e88ad90aba7cf1a7, type: 3}
   rarity: 0
   kind: 3
   mecha: {fileID: 0}

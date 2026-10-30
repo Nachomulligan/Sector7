@@ -6,9 +6,6 @@ public enum GachaRewardKind { Mecha, Weapon, Ability, Companion }
 [CreateAssetMenu(menuName = "Sector7/Gacha/Reward", fileName = "Reward_")]
 public sealed class GachaRewardSO : ScriptableObject
 {
-    [SerializeField] private string displayName;
-    [TextArea(2, 5)] [SerializeField] private string description;
-    [SerializeField] private Sprite icon;
     [SerializeField] private GachaRarity rarity;
     [SerializeField] private GachaRewardKind kind;
     [SerializeField] private MechaPresetSO mecha;
@@ -19,10 +16,11 @@ public sealed class GachaRewardSO : ScriptableObject
     [Min(1)] [SerializeField] private int maxLevel = 10;
     [Min(0f)] [SerializeField] private float bonusPerLevelPercent = 0.05f;
 
-    public string DisplayName => string.IsNullOrWhiteSpace(displayName) ? name : displayName;
-    public string Description => string.IsNullOrWhiteSpace(description)
-        ? "Objeto coleccionable de Sector 7." : description;
-    public Sprite Icon => icon;
+    public string DisplayName => PresentationSource != null ? PresentationSource.DisplayName : name;
+    public string Description => PresentationSource != null
+        ? PresentationSource.Description : "Objeto coleccionable de Sector 7.";
+    public Sprite Icon => PresentationSource != null ? PresentationSource.Icon : null;
+    public Color IconColor => PresentationSource != null ? PresentationSource.IconColor : Color.white;
     public GachaRarity Rarity => rarity;
     public GachaRewardKind Kind => kind;
     public MechaPresetSO Mecha => mecha;
@@ -35,6 +33,21 @@ public sealed class GachaRewardSO : ScriptableObject
     public bool IsValid => kind == GachaRewardKind.Mecha ? mecha != null
         : kind == GachaRewardKind.Weapon ? weapon != null
         : kind == GachaRewardKind.Ability ? ability != null : companion != null;
+
+    private IItemPresentationSource PresentationSource
+    {
+        get
+        {
+            switch (kind)
+            {
+                case GachaRewardKind.Mecha: return mecha;
+                case GachaRewardKind.Weapon: return weapon;
+                case GachaRewardKind.Ability: return ability;
+                case GachaRewardKind.Companion: return companion;
+                default: return null;
+            }
+        }
+    }
 
 #if UNITY_EDITOR
     private void OnValidate()
