@@ -21,6 +21,7 @@ public sealed class GachaPanelUI : MonoBehaviour
     [SerializeField] private TMP_Text shakeInstructionText;
     [SerializeField] private TMP_Text resultStatusText;
     [SerializeField] private AccelerometerShakeDetector shakeDetector;
+    [SerializeField] private GachaChestAnimationUI chestAnimation;
 
     [Header("Resultado")]
     [SerializeField] private GameObject singleRewardGroup;
@@ -59,6 +60,7 @@ public sealed class GachaPanelUI : MonoBehaviour
         gacha.OnPullCompleted += HandlePullCompleted;
         shakeDetector.OnShakeDetected += HandleShakeDetected;
         shakeDetector.OnStateChanged += HandleShakeStateChanged;
+        chestAnimation.OpeningCompleted += HandleChestOpeningCompleted;
         initialized = true;
 
         if (gacha.HasPendingPull) ShowWaitingForShake();
@@ -78,6 +80,7 @@ public sealed class GachaPanelUI : MonoBehaviour
         gacha.OnPullCompleted -= HandlePullCompleted;
         shakeDetector.OnShakeDetected -= HandleShakeDetected;
         shakeDetector.OnStateChanged -= HandleShakeStateChanged;
+        chestAnimation.OpeningCompleted -= HandleChestOpeningCompleted;
     }
 
     public void PullSoft() => BeginPull(GachaCurrency.Soft);
@@ -102,6 +105,7 @@ public sealed class GachaPanelUI : MonoBehaviour
     private void CloseReveal()
     {
         lastResult = null;
+        chestAnimation.ShowClosed();
         if (detailsPanel != null) detailsPanel.Hide();
         if (revealOverlay != null) revealOverlay.SetActive(false);
         RefreshStore();
@@ -115,15 +119,27 @@ public sealed class GachaPanelUI : MonoBehaviour
         revealOverlay.SetActive(true);
         closedChestState.SetActive(true);
         resultState.SetActive(false);
+        chestAnimation.ShowClosed();
         RefreshShakeMessage();
         RefreshStore();
     }
 
     private void HandleShakeDetected()
     {
+        if (!gacha.HasPendingPull || chestAnimation.IsOpening) return;
+        shakeInstructionText.text = "ABRIENDO CAJA…";
+        if (!chestAnimation.PlayOpening()) HandleChestOpeningCompleted();
+    }
+
+    private void HandleChestOpeningCompleted()
+    {
         if (!gacha.HasPendingPull) return;
         if (!gacha.TryCompletePendingPull(out _))
+        {
             resultStatusText.text = "NO SE PUDO ABRIR LA CAJA";
+            chestAnimation.ShowClosed();
+            RefreshShakeMessage();
+        }
     }
 
     private void HandleShakeStateChanged(ShakeDetectorState state)
@@ -177,6 +193,11 @@ public sealed class GachaPanelUI : MonoBehaviour
     private void RefreshShakeMessage()
     {
         if (shakeInstructionText == null || shakeDetector == null) return;
+        if (chestAnimation != null && chestAnimation.IsOpening)
+        {
+            shakeInstructionText.text = "ABRIENDO CAJA…";
+            return;
+        }
         switch (shakeDetector.State)
         {
             case ShakeDetectorState.Unavailable:
@@ -210,7 +231,7 @@ public sealed class GachaPanelUI : MonoBehaviour
     private bool HasViewReferences => softPullButton != null && premiumPullButton != null &&
         balanceText != null && pityText != null && inventoryText != null && revealOverlay != null &&
         closedChestState != null && resultState != null && closedChestImage != null && openChestImage != null &&
-        shakeInstructionText != null && resultStatusText != null && shakeDetector != null &&
+        shakeInstructionText != null && resultStatusText != null && shakeDetector != null && chestAnimation != null &&
         singleRewardGroup != null && duplicateRewardGroup != null && singleRewardCard != null &&
         previousLevelCard != null && currentLevelCard != null && buyAgainButton != null &&
         buyAgainButtonText != null && exitButton != null && detailsPanel != null;
