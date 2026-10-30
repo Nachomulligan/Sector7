@@ -10,6 +10,13 @@ public class Projectile : MonoBehaviour, IPoolable
     [Tooltip("Velocidad de giro (grados/seg) cuando el proyectil es homing.")]
     [SerializeField] private float homingTurnSpeed = 220f;
 
+    [Header("Audio")]
+    [Tooltip("Sonido reproducido al lanzar este prefab de proyectil.")]
+    [SerializeField] private AudioClip launchSound;
+    [Range(0f, 1f)] [SerializeField] private float launchSoundVolume = 1f;
+    [Tooltip("Evita superponer el mismo sonido cuando una ráfaga crea varios proyectiles.")]
+    [Min(0f)] [SerializeField] private float launchSoundMinimumInterval = 0.04f;
+
     private Rigidbody2D body;
     private Faction ownerFaction;
     private int damage;
@@ -97,6 +104,8 @@ public class Projectile : MonoBehaviour, IPoolable
     public void OnSpawn()
     {
         homingTarget = null;
+        if (ServiceLocator.Instance.TryGet(out AudioService audioService))
+            audioService.PlaySfx(launchSound, launchSoundVolume, launchSoundMinimumInterval);
     }
 
     public void OnDespawn()

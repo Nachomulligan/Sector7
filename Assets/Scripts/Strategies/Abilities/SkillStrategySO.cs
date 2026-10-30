@@ -12,6 +12,11 @@ public abstract class SkillStrategySO : ScriptableObject, ISkillStrategy, IItemP
     [Header("Stats base (compartidos por toda habilidad)")]
     [SerializeField] protected float cooldown = 8f;
 
+    [Header("Audio")]
+    [Tooltip("Sonido reproducido cuando la habilidad se activa correctamente.")]
+    [SerializeField] private AudioClip activationSound;
+    [Range(0f, 1f)] [SerializeField] private float activationSoundVolume = 1f;
+
     public float Cooldown => cooldown;
     public string DisplayName => string.IsNullOrWhiteSpace(displayName)
         ? name.Replace("Ability_", string.Empty) : displayName;
@@ -20,7 +25,14 @@ public abstract class SkillStrategySO : ScriptableObject, ISkillStrategy, IItemP
     public Sprite Icon => icon;
     public Color IconColor => iconColor;
 
-    public abstract void Activate(Transform user);
+    public void Activate(Transform user)
+    {
+        if (user == null || !TryActivateEffect(user)) return;
+        if (ServiceLocator.Instance.TryGet(out AudioService audioService))
+            audioService.PlaySfx(activationSound, activationSoundVolume);
+    }
+
+    protected abstract bool TryActivateEffect(Transform user);
 
     protected Faction ResolveFaction(Transform user)
     {

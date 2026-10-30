@@ -159,6 +159,10 @@ public sealed class GachaPanelUI : MonoBehaviour
         singleRewardGroup.SetActive(!duplicate);
         duplicateRewardGroup.SetActive(duplicate);
 
+        if (duplicate && result.LevelIncreased &&
+            ServiceLocator.Instance.TryGet(out AudioService audioService))
+            audioService.PlayUpgradeFeedback();
+
         if (duplicate)
         {
             previousLevelCard.Bind(result.Reward, Mathf.Max(1, result.PreviousLevel), rarityVisuals,

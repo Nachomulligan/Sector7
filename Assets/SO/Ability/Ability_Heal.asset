@@ -18,4 +18,6 @@ MonoBehaviour:
   icon: {fileID: 2489258271204663530, guid: d8e03800077f33a48a8447fac85ee950, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 12
+  activationSound: {fileID: 8300000, guid: 0812c556fe4ced247af21a8f7afdae31, type: 3}
+  activationSoundVolume: 1
   healAmount: 35

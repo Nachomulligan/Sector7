@@ -9,11 +9,10 @@ public class ShieldStrategy : SkillStrategySO
 
     public float Duration => duration;
 
-    public override void Activate(Transform user)
+    protected override bool TryActivateEffect(Transform user)
     {
-        if (user.TryGetComponent(out Health health))
-        {
-            health.ActivateShield(duration);
-        }
+        if (!user.TryGetComponent(out Health health)) return false;
+        health.ActivateShield(duration);
+        return true;
     }
 }

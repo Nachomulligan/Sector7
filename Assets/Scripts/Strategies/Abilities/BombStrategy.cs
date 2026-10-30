@@ -11,7 +11,7 @@ public class BombStrategy : SkillStrategySO
     public int Damage => damage;
     public float BlastRadius => blastRadius;
 
-    public override void Activate(Transform user)
+    protected override bool TryActivateEffect(Transform user)
     {
         Faction userFaction = ResolveFaction(user);
         Collider2D[] hits = Physics2D.OverlapCircleAll(user.position, blastRadius);
@@ -25,5 +25,7 @@ public class BombStrategy : SkillStrategySO
 
             damageable.TakeDamage(damage, user.gameObject);
         }
+
+        return true;
     }
 }

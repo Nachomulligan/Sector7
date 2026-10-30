@@ -18,5 +18,7 @@ MonoBehaviour:
   icon: {fileID: -1643389817789898457, guid: 5bbc3351b6e0aa248bf33a64f930744a, type: 3}
   iconColor: {r: 1, g: 1, b: 1, a: 1}
   cooldown: 8
+  activationSound: {fileID: 8300000, guid: 3b4a75f17af426340857e5d5b2ef07e7, type: 3}
+  activationSoundVolume: 1
   damage: 999
   blastRadius: 30

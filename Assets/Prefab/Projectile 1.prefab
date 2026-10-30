@@ -204,3 +204,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   maxLifetime: 4
   homingTurnSpeed: 220
+  launchSound: {fileID: 8300000, guid: c957064dc6c25ff498d9a5d66b5588c4, type: 3}
+  launchSoundVolume: 1
+  launchSoundMinimumInterval: 0.04

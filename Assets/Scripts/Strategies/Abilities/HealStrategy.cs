@@ -8,9 +8,10 @@ public sealed class HealStrategy : SkillStrategySO
 
     public int HealAmount => healAmount;
 
-    public override void Activate(Transform user)
+    protected override bool TryActivateEffect(Transform user)
     {
-        if (user != null && user.TryGetComponent(out Health health))
-            health.Heal(healAmount);
+        if (!user.TryGetComponent(out Health health)) return false;
+        health.Heal(healAmount);
+        return true;
     }
 }

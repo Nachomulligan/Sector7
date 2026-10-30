@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 2698274910393007232}
   - component: {fileID: 5374150457241117529}
   - component: {fileID: 4111530943763335873}
+  - component: {fileID: 1324840927750333099}
   m_Layer: 5
   m_Name: Button
   m_TagString: Untagged
@@ -258,6 +259,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &1324840927750333099
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3343902201167356793}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19210174eecc44069e19f65e123c843b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudioFeedback
 --- !u!1 &5075274721938529818
 GameObject:
   m_ObjectHideFlags: 0
@@ -870,6 +883,7 @@ GameObject:
   - component: {fileID: 1252417826986275178}
   - component: {fileID: 2108527994217452901}
   - component: {fileID: 1507744591734087457}
+  - component: {fileID: 5166452864346763969}
   m_Layer: 5
   m_Name: ActionButton
   m_TagString: Untagged
@@ -992,6 +1006,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.InputSystem::UnityEngine.InputSystem.OnScreen.OnScreenButton
   m_ControlPath: <Gamepad>/buttonSouth
+--- !u!114 &5166452864346763969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8739591043476989092}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19210174eecc44069e19f65e123c843b, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: Assembly-CSharp::UIButtonAudioFeedback
 --- !u!1 &9028633128854224504
 GameObject:
   m_ObjectHideFlags: 0

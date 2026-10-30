@@ -68,7 +68,11 @@ public class Health : MonoBehaviour, IDamageable, IPlayerTarget
         currentHealth = Mathf.Max(0, currentHealth - amount);
         OnHealthChanged?.Invoke(currentHealth, MaxHealth);
 
-        if (currentHealth == 0)
+        bool died = currentHealth == 0;
+        if (ServiceLocator.Instance.TryGet(out AudioService audioService))
+            audioService.PlayDamageFeedback(faction, died);
+
+        if (died)
         {
             OnDeath?.Invoke(source);
         }
