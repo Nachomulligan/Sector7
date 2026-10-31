@@ -21,9 +21,11 @@ public sealed class AudioService : MonoBehaviour
 
     [Header("Combate")]
     [SerializeField] private AudioClip playerHitClip;
+    [Range(0f, 1f)] [SerializeField] private float playerHitVolume = 1f;
     [SerializeField] private AudioClip playerDeathClip;
+    [Range(0f, 1f)] [SerializeField] private float playerDeathVolume = 1f;
     [SerializeField] private AudioClip enemyDeathClip;
-    [Range(0f, 1f)] [SerializeField] private float combatFeedbackVolume = 1f;
+    [Range(0f, 1f)] [SerializeField] private float enemyDeathVolume = 1f;
 
     [Header("Gacha")]
     [SerializeField] private AudioClip upgradeClip;
@@ -70,10 +72,14 @@ public sealed class AudioService : MonoBehaviour
 
     public void PlayDamageFeedback(Faction faction, bool died)
     {
-        AudioClip clip = faction == Faction.Player
-            ? (died ? playerDeathClip : playerHitClip)
-            : (died ? enemyDeathClip : null);
-        PlaySfx(clip, combatFeedbackVolume);
+        if (faction == Faction.Player)
+        {
+            PlaySfx(died ? playerDeathClip : playerHitClip,
+                died ? playerDeathVolume : playerHitVolume);
+            return;
+        }
+
+        if (died) PlaySfx(enemyDeathClip, enemyDeathVolume);
     }
 
     public void PlayUpgradeFeedback() => PlaySfx(upgradeClip, upgradeVolume);

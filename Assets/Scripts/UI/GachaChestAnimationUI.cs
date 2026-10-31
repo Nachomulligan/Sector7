@@ -7,6 +7,7 @@ public sealed class GachaChestAnimationUI : MonoBehaviour
     [SerializeField] private Animator animator;
     [SerializeField] private string closedStateName = "Closed";
     [SerializeField] private string openingTriggerName = "Open";
+    [SerializeField] private ScreenFlashUI screenFlash;
 
     [Header("Audio")]
     [Tooltip("Sonido sincronizado con el momento en que el cofre termina de abrirse.")]
@@ -57,6 +58,8 @@ public sealed class GachaChestAnimationUI : MonoBehaviour
     // Invocado por el Animation Event del cuadro de apertura.
     public void PlayOpeningSound()
     {
+        if (screenFlash != null) screenFlash.Play();
+
         if (ServiceLocator.Instance.TryGet(out AudioService audioService))
             audioService.PlaySfx(openingSound, openingSoundVolume);
     }

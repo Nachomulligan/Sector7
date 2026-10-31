@@ -12,6 +12,7 @@ public class UIManagerGameplay : MonoBehaviour
 
     [Header("Health")]
     [SerializeField] private TMP_Text healthText;
+    [SerializeField] private LowHealthScreenEffect lowHealthEffect;
 
     [Header("Ability")]
     [SerializeField] private Button abilityButton;
@@ -54,6 +55,7 @@ public class UIManagerGameplay : MonoBehaviour
         {
             playerHealth.OnHealthChanged += HandleHealthChanged;
             HandleHealthChanged(playerHealth.CurrentHealth, playerHealth.MaxHealth);
+            if (lowHealthEffect != null) lowHealthEffect.Bind(playerHealth);
         }
 
         if (abilityButton != null)
@@ -114,6 +116,8 @@ public class UIManagerGameplay : MonoBehaviour
         {
             playerHealth.OnHealthChanged -= HandleHealthChanged;
         }
+
+        if (lowHealthEffect != null) lowHealthEffect.Unbind();
 
         if (abilityButton != null)
         {
