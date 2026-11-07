@@ -8,9 +8,14 @@ public sealed class GachaPanelUI : MonoBehaviour
     [Header("Tienda")]
     [SerializeField] private Button softPullButton;
     [SerializeField] private Button premiumPullButton;
+    [SerializeField] private GachaBannerSO premiumBanner;
+    [SerializeField] private Color standardChestColor = Color.white;
+    [SerializeField] private Color premiumChestColor = new Color(0.72f, 0.42f, 1f, 1f);
     [SerializeField] private TMP_Text balanceText;
     [SerializeField] private TMP_Text pityText;
     [SerializeField] private TMP_Text inventoryText;
+    [SerializeField] private TMP_Text premiumPityText;
+    [SerializeField] private TMP_Text storeFeedbackText;
 
     [Header("Apertura")]
     [SerializeField] private GameObject revealOverlay;
@@ -39,6 +44,7 @@ public sealed class GachaPanelUI : MonoBehaviour
     private PlayerInventory inventory;
     private GachaPullResult lastResult;
     private GachaCurrency lastCurrency = GachaCurrency.Soft;
+    private GachaBannerSO lastBanner;
     private bool initialized;
 
     private void Start()
@@ -63,7 +69,7 @@ public sealed class GachaPanelUI : MonoBehaviour
         chestAnimation.OpeningCompleted += HandleChestOpeningCompleted;
         initialized = true;
 
-        if (gacha.HasPendingPull) ShowWaitingForShake();
+        if (gacha.HasPendingPull) HandlePullPending(gacha.PendingPull);
         else CloseReveal();
         RefreshStore();
     }
@@ -83,14 +89,16 @@ public sealed class GachaPanelUI : MonoBehaviour
         chestAnimation.OpeningCompleted -= HandleChestOpeningCompleted;
     }
 
-    public void PullSoft() => BeginPull(GachaCurrency.Soft);
-    public void PullPremium() => BeginPull(GachaCurrency.Premium);
+    public void PullSoft() => BeginPull(gacha.DefaultBanner, GachaCurrency.Soft);
+    public void PullPremium() => BeginPull(premiumBanner != null ? premiumBanner : gacha.DefaultBanner, GachaCurrency.Premium);
 
-    private void BeginPull(GachaCurrency currency)
+    private void BeginPull(GachaBannerSO banner, GachaCurrency currency)
     {
         lastCurrency = currency;
-        if (gacha.TryBeginDefaultPull(currency, out GachaPullFailure failure)) return;
+        lastBanner = banner;
+        if (gacha.TryBeginPull(banner, currency, out GachaPullFailure failure)) return;
 
+        if (storeFeedbackText != null) storeFeedbackText.text = FailureMessage(failure).ToUpperInvariant();
         if (resultStatusText != null) resultStatusText.text = FailureMessage(failure).ToUpperInvariant();
         if (revealOverlay != null && !revealOverlay.activeSelf)
             Debug.LogWarning($"Gacha: {FailureMessage(failure)}", this);
@@ -99,7 +107,7 @@ public sealed class GachaPanelUI : MonoBehaviour
     private void BuyAgain()
     {
         if (detailsPanel != null) detailsPanel.Hide();
-        BeginPull(lastCurrency);
+        BeginPull(lastBanner, lastCurrency);
     }
 
     private void CloseReveal()
@@ -111,7 +119,12 @@ public sealed class GachaPanelUI : MonoBehaviour
         RefreshStore();
     }
 
-    private void HandlePullPending(GachaPendingPull pending) => ShowWaitingForShake();
+    private void HandlePullPending(GachaPendingPull pending)
+    {
+        lastBanner = pending.Banner;
+        lastCurrency = pending.Currency;
+        ShowWaitingForShake();
+    }
 
     private void ShowWaitingForShake()
     {
@@ -119,9 +132,17 @@ public sealed class GachaPanelUI : MonoBehaviour
         revealOverlay.SetActive(true);
         closedChestState.SetActive(true);
         resultState.SetActive(false);
+        ApplyChestColor();
         chestAnimation.ShowClosed();
         RefreshShakeMessage();
         RefreshStore();
+    }
+
+    private void ApplyChestColor()
+    {
+        Color tint = lastBanner != null && lastBanner == premiumBanner ? premiumChestColor : standardChestColor;
+        if (closedChestImage != null) closedChestImage.color = tint;
+        if (openChestImage != null) openChestImage.color = tint;
     }
 
     private void HandleShakeDetected()
@@ -182,8 +203,8 @@ public sealed class GachaPanelUI : MonoBehaviour
 
         if (result.PityTriggered) resultStatusText.text += " · GARANTÍA";
         buyAgainButtonText.text = lastCurrency == GachaCurrency.Soft
-            ? $"OTRA CAJA · {gacha.DefaultBanner.SoftCost} CR"
-            : $"OTRA CAJA · {gacha.DefaultBanner.PremiumCost} GEMAS";
+            ? $"OTRA CAJA · {lastBanner.SoftCost} CR"
+            : $"OTRA CAJA · {lastBanner.PremiumCost} GEMAS";
         RefreshStore();
     }
 
@@ -222,14 +243,16 @@ public sealed class GachaPanelUI : MonoBehaviour
         balanceText.text = $"CRÉDITOS  {inventory.SoftCurrency:N0}     GEMAS  {inventory.PremiumCurrency:N0}";
         if (gacha.DefaultBanner != null)
             pityText.text = $"GARANTÍA ÉPICO+  {gacha.GetPullsSinceEpic(gacha.DefaultBanner)} / {gacha.DefaultBanner.EpicPityThreshold}";
+        if (premiumPityText != null && premiumBanner != null)
+            premiumPityText.text = $"GARANTÍA ÉPICO+  {gacha.GetPullsSinceEpic(premiumBanner)} / {premiumBanner.EpicPityThreshold}";
         inventoryText.text = $"COLECCIÓN  {inventory.Owned.Count} OBJETOS";
 
         bool ready = !gacha.HasPendingPull && shakeDetector.State == ShakeDetectorState.Ready;
         softPullButton.interactable = ready;
         premiumPullButton.interactable = ready;
         if (buyAgainButton != null)
-            buyAgainButton.interactable = ready && gacha.DefaultBanner != null &&
-                inventory.CanSpend(lastCurrency, gacha.DefaultBanner.Cost(lastCurrency));
+            buyAgainButton.interactable = ready && lastBanner != null &&
+                inventory.CanSpend(lastCurrency, lastBanner.Cost(lastCurrency));
     }
 
     private bool HasViewReferences => softPullButton != null && premiumPullButton != null &&

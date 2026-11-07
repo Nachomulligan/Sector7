@@ -8,14 +8,16 @@ public sealed class GachaPendingPull
 {
     public GachaBannerSO Banner { get; }
     public GachaRewardSO Reward { get; }
+    public GachaCurrency Currency { get; }
     public bool PityTriggered { get; }
     public int PreviousPullsSinceEpic { get; }
 
-    public GachaPendingPull(GachaBannerSO banner, GachaRewardSO reward,
+    public GachaPendingPull(GachaBannerSO banner, GachaRewardSO reward, GachaCurrency currency,
         bool pityTriggered, int previousPullsSinceEpic)
     {
         Banner = banner;
         Reward = reward;
+        Currency = currency;
         PityTriggered = pityTriggered;
         PreviousPullsSinceEpic = previousPullsSinceEpic;
     }
@@ -54,6 +56,7 @@ public sealed class GachaService : MonoBehaviour
     public event Action<GachaPullResult> OnPullCompleted;
     public GachaBannerSO DefaultBanner => defaultBanner;
     public bool HasPendingPull => pendingPull != null;
+    public GachaPendingPull PendingPull => pendingPull;
 
     private void OnEnable() => ServiceLocator.Instance.Register(this);
 
@@ -84,7 +87,7 @@ public sealed class GachaService : MonoBehaviour
         if (!inventory.TrySpend(currency, banner.Cost(currency)))
         { failure = GachaPullFailure.InsufficientCurrency; return false; }
 
-        pendingPull = new GachaPendingPull(banner, reward, pity, previousPulls);
+        pendingPull = new GachaPendingPull(banner, reward, currency, pity, previousPulls);
         OnPullPending?.Invoke(pendingPull);
         return true;
     }

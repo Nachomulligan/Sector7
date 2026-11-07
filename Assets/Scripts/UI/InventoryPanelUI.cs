@@ -20,6 +20,8 @@ public sealed class InventoryPanelUI : MonoBehaviour
     [SerializeField] private Button weaponTab;
     [SerializeField] private Button abilityTab;
     [SerializeField] private Button companionTab;
+    [SerializeField] private Color categoryColor = new Color(0.1f, 0.19f, 0.34f, 1f);
+    [SerializeField] private Color selectedCategoryColor = new Color(0.12f, 0.35f, 0.57f, 1f);
 
     private PlayerInventory inventory;
     private GachaRewardKind currentKind = GachaRewardKind.Mecha;
@@ -63,6 +65,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
         currentKind = kind;
         selectedReward = null;
         if (detailsPanel != null) detailsPanel.Hide();
+        RefreshTabs();
         RefreshItems();
         RefreshSelection();
     }
@@ -72,6 +75,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
         RefreshEquipped();
         RefreshItems();
         RefreshSelection();
+        RefreshTabs();
     }
 
     private void RefreshEquipped()
@@ -98,7 +102,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
         int level = inventory.Level(reward);
         card.name = $"Equipped_{reward.name}";
         card.Bind(reward, level, rarityVisuals, true,
-            () => EquipReward(reward), false, () => ShowDetails(reward));
+            () => ShowDetails(reward), false, () => ShowDetails(reward));
     }
 
     private void RefreshItems()
@@ -114,7 +118,7 @@ public sealed class InventoryPanelUI : MonoBehaviour
             ItemCardUI card = Instantiate(itemCardPrefab, itemContent);
             card.name = $"Item_{reward.name}";
             card.Bind(reward, level, rarityVisuals, IsEquipped(reward),
-                () => EquipReward(reward), true, () => ShowDetails(reward));
+                () => { if (IsEquipped(reward)) ShowDetails(reward); else EquipReward(reward); }, true, () => ShowDetails(reward));
             generatedItems.Add(card.gameObject);
         }
         emptyText.gameObject.SetActive(count == 0);
@@ -156,6 +160,28 @@ public sealed class InventoryPanelUI : MonoBehaviour
         selectionText.text = selectedReward == null
             ? $"SELECCIONÁ UN {RewardPresentationUtility.KindName(currentKind)}"
             : $"{selectedReward.DisplayName.ToUpperInvariant()} · NV. {inventory.Level(selectedReward)}";
+    }
+
+    private void RefreshTabs()
+    {
+        SetTab(mechaTab, currentKind == GachaRewardKind.Mecha);
+        SetTab(weaponTab, currentKind == GachaRewardKind.Weapon);
+        SetTab(abilityTab, currentKind == GachaRewardKind.Ability);
+        SetTab(companionTab, currentKind == GachaRewardKind.Companion);
+    }
+
+    private void SetTab(Button button, bool selected)
+    {
+        if (button == null || button.targetGraphic == null) return;
+        Color color = selected ? selectedCategoryColor : categoryColor;
+        ColorBlock colors = button.colors;
+        colors.normalColor = color;
+        colors.highlightedColor = color;
+        colors.selectedColor = color;
+        colors.pressedColor = color * 0.85f;
+        colors.pressedColor = new Color(colors.pressedColor.r, colors.pressedColor.g, colors.pressedColor.b, color.a);
+        button.targetGraphic.color = Color.white;
+        button.colors = colors;
     }
 
     private GachaRewardSO FindEquippedReward(GachaRewardKind kind)

@@ -59,6 +59,8 @@ MonoBehaviour:
   enemyDeathVolume: 1
   upgradeClip: {fileID: 8300000, guid: 3de7656373c84f54ba5b4c2e2202ce42, type: 3}
   upgradeVolume: 1
+  gemPurchaseClip: {fileID: 8300000, guid: 8360e046391d39844a8713f53a699afc, type: 3}
+  gemPurchaseVolume: 1
 --- !u!82 &3531181675650291051
 AudioSource:
   m_ObjectHideFlags: 0

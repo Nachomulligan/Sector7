@@ -30,6 +30,8 @@ public sealed class AudioService : MonoBehaviour
     [Header("Gacha")]
     [SerializeField] private AudioClip upgradeClip;
     [Range(0f, 1f)] [SerializeField] private float upgradeVolume = 1f;
+    [SerializeField] private AudioClip gemPurchaseClip;
+    [Range(0f, 1f)] [SerializeField] private float gemPurchaseVolume = 1f;
 
     private readonly Dictionary<AudioClip, float> nextAllowedPlayTime =
         new Dictionary<AudioClip, float>();
@@ -83,6 +85,7 @@ public sealed class AudioService : MonoBehaviour
     }
 
     public void PlayUpgradeFeedback() => PlaySfx(upgradeClip, upgradeVolume);
+    public void PlayGemPurchaseFeedback() => PlaySfx(gemPurchaseClip, gemPurchaseVolume);
 
     private static void Play(AudioSource source, AudioClip clip, float volume)
     {
